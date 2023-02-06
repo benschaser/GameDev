@@ -1,4 +1,0 @@
-/Users/benschaser/Documents/College_Work/Junior_23/Semester_2/Game_Dev/Game/build/CMakeFiles/gamelib.dir
-/Users/benschaser/Documents/College_Work/Junior_23/Semester_2/Game_Dev/Game/build/CMakeFiles/main.dir
-/Users/benschaser/Documents/College_Work/Junior_23/Semester_2/Game_Dev/Game/build/CMakeFiles/edit_cache.dir
-/Users/benschaser/Documents/College_Work/Junior_23/Semester_2/Game_Dev/Game/build/CMakeFiles/rebuild_cache.dir
