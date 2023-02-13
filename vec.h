@@ -6,7 +6,7 @@
 template <typename T>
 class Vec {
 public:
-    Vec(T x=T{}, T t=T{})
+    Vec(T x=T{}, T y=T{})
     : x{x}, y{y} {}
     T x, y;
 };
@@ -88,7 +88,7 @@ bool operator!=(const Vec<T>& left, const Vec<T>& right) {
 // TODO: add distance calc
 template <typename T>
 std::ostream& operator<<(std::ostream& os, const Vec<T> vec) {
-    return os << "(" << Vec.x << ", " << Vec.y << ")";
+    return os << "(" << vec.x << ", " << vec.y << ")";
 }
 
 namespace std {
@@ -104,5 +104,5 @@ namespace std {
             hash_combine(seed, v.y);
             return seed;
         }
-    }
+    };
 }

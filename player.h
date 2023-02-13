@@ -1,6 +1,7 @@
 #pragma once
 
 #include "graphics.h"
+#include "vec.h"
 #include <SDL2/SDL.h>
 
 // forward declaration
@@ -8,12 +9,15 @@ class World;
 
 class Player {
 public:
-    Player(int x, int y, int size);
+    Player(const Vec<double>& position, const Vec<int>& size);
     void handle_input(const SDL_Event& event);
-    void update(World& world);
+    void update(World& world, double dt);
     std::pair<SDL_Rect, Color> get_sprite() const;
     
 private:
-    SDL_Rect bounding_box;
-    int vx, vy;
+    // SDL_Rect bounding_box;
+    // int vx, vy;
+    Vec<double> position;
+    Vec<int> size;
+    Vec<double> velocity, acceleration;
 };

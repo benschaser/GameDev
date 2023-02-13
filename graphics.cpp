@@ -11,8 +11,8 @@ Graphics::Graphics(const std::string& title, int window_width, int window_height
     if (result < 0) {
         std::cout << SDL_GetError() << '\n';
     }
-
-    window = SDL_CreateWindow("Title", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, 0);
+    const char* title_char = title.c_str();
+    window = SDL_CreateWindow(title_char, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, 0);
     if (!window) {
         std::cout << SDL_GetError() << '\n';
     }
