@@ -1,10 +1,10 @@
 #include "player.h"
 #include "world.h"
 
-constexpr double walk_acceleration = 480;
-constexpr double jump_velocity = 150;
+constexpr double walk_acceleration = 600;
+constexpr double jump_velocity = 350;
 constexpr double terminal_velocity = 500;
-constexpr double gravity = 50;
+constexpr double gravity = 200;
 constexpr double damping = 0.9;
 
 Player::Player(const Vec<double>& position, const Vec<int>& size)
