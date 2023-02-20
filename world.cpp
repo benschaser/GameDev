@@ -1,9 +1,14 @@
 #include "world.h"
-#include <SDL2/SDL_rect.h>
-#include <algorithm>
+
+World::World(int width, int height)
+    :tilemap{width, height};
 
 void World::add_platform(int x, int y, int width, int height) {
-    platforms.push_back(SDL_Rect{x, y, width, height});
+    for (int n = 0; n <= height; ++n) {
+        for (int m = 0; m <= width; ++m) {
+            tilemap(x+m, y+n) = Tile::Platform;
+        }
+    }
 }
 
 const std::vector<SDL_Rect>& World::get_platforms() const {

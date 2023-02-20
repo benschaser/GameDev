@@ -14,8 +14,8 @@ public:
     void move_to(const Vec<double>& new_location);
     Vec<int> world_to_screen(const Vec<double>& world_position) const;
 
-    void render(const Vec<double>& position, const Color& color, bool fill = true) const;
-    void render(const Tilemap& tilemao, bool grid_on = false) const;
+    void render(const Vec<double>& position, const Color& color, bool filled = true) const;
+    void render(const Tilemap& tilemap, bool grid_on = false) const;
 
 private:
     Graphics& graphics;
