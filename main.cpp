@@ -1,25 +1,42 @@
 #include "graphics.h"
 #include "player.h"
 #include "world.h"
+#include "camera.h"
 #include <SDL2/SDL.h>
 #include <iostream>
+#include <chrono>
 
 int main() {
     Graphics graphics{"Game", 1280, 720};
     
     // objects
-    Player player{{600, 300}, {64, 64}};
+    Player player{{10, 4}, {1, 1}};
     
-    World world;
-    world.add_platform(0, 656, 1280, 64);
-    world.add_platform(200, 450, 400, 64);
-    world.add_platform(600, 200, 250, 64);
-    world.add_platform(0, 0, 64, 720);
-    world.add_platform(1216, 0, 64, 720);
-    
+    World world{31, 11};
+    // bounds
+    world.add_platform(0, 0, 30, 1);
+    world.add_platform(0, 0, 1, 10);
+    world.add_platform(30, 0, 1, 10);
+    world.add_platform(0, 10, 31, 1);
+
+    // platforms
+    world.add_platform(3, 7, 4, 1);
+    world.add_platform(12, 3, 6, 1);
+    // camera
+    int tilesize{64};
+    Camera camera{graphics, tilesize};
+    camera.move_to({10, 5});
     
     bool running{true};
+    bool grid_on{false};
+    auto previous = std::chrono::high_resolution_clock::now();
+    double lag{0.0};
     while (running) {
+        auto current = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double> elapsed = current - previous;
+        previous = current;
+        lag += elapsed.count();
+
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
             // handle windows and systems events first
@@ -27,22 +44,38 @@ int main() {
                 running = false;
                 break;
             }
+            if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_g) {
+                grid_on = !grid_on;
+            } 
             // pass the rest of the events to the player who will
             // react to keypresses by moving
             player.handle_input(event);
         }
 
         // move the player in the world
-        constexpr double dt = 1.0/30.0;
-        player.update(world, dt);
+        constexpr double dt = 1.0/60.0;
+        while(lag >= dt) {
+            player.update(world, dt);
+            camera.move_to(player.get_sprite().first);
+            camera.update(dt);
+
+            // Vec<double> pos = player.get_sprite().first;
+            
+            // if (pos.y < (world.tilemap.height / 2)) {
+            //     pos.y = world.tilemap.height / 2;
+            // }
+            // camera.move_to(pos);
+            
+            
+            lag -= dt;
+        }
+        
 
         // draw the player and platforms
         graphics.clear();
-        auto [box, color] = player.get_sprite();
-        graphics.draw(box, color);
-        for (const auto& platform : world.get_platforms()) {
-            graphics.draw(platform, {0, 255, 0, 255});
-        }
+        camera.render(world.tilemap, grid_on);
+        auto [position, color] = player.get_sprite();
+        camera.render(position, color);
         graphics.update();
     }
 }
