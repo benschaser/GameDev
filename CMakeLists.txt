@@ -12,6 +12,8 @@ add_library(gamelib
   world.cpp
   tilemap.cpp
   camera.cpp
+  physics.cpp
+  fsm.cpp
 )
 
 target_include_directories(gamelib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SDL2_INCLUDE_DIRS})

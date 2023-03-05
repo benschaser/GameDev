@@ -25,5 +25,4 @@ private:
     Vec<double> velocity = 0;
     void calculate_visible_tiles();
     Vec<int> visible_min, visible_max;
-    
 };
