@@ -32,11 +32,19 @@ std::unique_ptr<State> State::update(Player& player, World& world, double dt) {
 //////////////////
 // Standing
 //////////////////
-std::unique_ptr<State> Standing::handle_input(Player&, const SDL_Event& event) {
+std::unique_ptr<State> Standing::handle_input(Player& player, const SDL_Event& event) {
     if (event.type == SDL_KEYDOWN) {
         SDL_Keycode key = event.key.keysym.sym;
         if (key == SDLK_SPACE || key == SDLK_UP) {
             return std::make_unique<Jumping>();
+        }
+        else if (key == SDLK_RIGHT) {
+            player.physics.acceleration.x = player.walk_acceleration;
+            return std::make_unique<Walking>();
+        }
+        else if (key == SDLK_LEFT) {
+            player.physics.acceleration.x = -player.walk_acceleration;
+            return std::make_unique<Walking>();
         }
     }
     return nullptr;
@@ -55,7 +63,28 @@ void Standing::enter(Player& player) {
     player.color = {255, 0, 0, 255};
 }
 
+//////////////////
+// Walking
+//////////////////
+std::unique_ptr<State> Walking::handle_input(Player&, const SDL_Event& event) {
+    if (event.type == SDL_KEYDOWN) {
+        SDL_Keycode key = event.key.keysym.sym;
+        if (key == SDLK_SPACE || key == SDLK_UP) {
+            return std::make_unique<Jumping>();
+        }
+    }
+    return nullptr;
+}
 
+std::unique_ptr<State> Walking::update(Player& player, World& world, double dt) {
+    State::update(player, world, dt);
+    return nullptr;
+}
+
+void Walking::enter(Player& player) {
+    player.physics.velocity.y = 0.0;
+    player.color = {200, 160, 160, 255};
+}
 
 //////////////////
 // Jumping
@@ -85,6 +114,7 @@ std::unique_ptr<State> Jumping::update(Player& player, World& world, double dt) 
 }
 
 void Jumping::enter(Player& player) {
+    player.physics.acceleration.x = 0;
     player.physics.velocity.y = player.jump_velocity;
     player.color = {0, 0, 255, 255};
 }

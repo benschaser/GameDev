@@ -25,7 +25,6 @@ int main() {
     // camera
     int tilesize{64};
     Camera camera{graphics, tilesize};
-    camera.move_to({10, 5});
     
     bool running{true};
     bool grid_on{false};
@@ -58,14 +57,6 @@ int main() {
             player.update(world, dt);
             camera.move_to(player.get_sprite().first);
             camera.update(dt);
-
-            // Vec<double> pos = player.get_sprite().first;
-            
-            // if (pos.y < (world.tilemap.height / 2)) {
-            //     pos.y = world.tilemap.height / 2;
-            // }
-            // camera.move_to(pos);
-            
             
             lag -= dt;
         }

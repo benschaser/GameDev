@@ -23,7 +23,31 @@ public:
     // virtual void exit(Player&) {}
 };
 
+class Walking : public State {
+public:
+    virtual std::unique_ptr<State> handle_input(Player& player, const SDL_Event& event) override;
+    virtual std::unique_ptr<State> update(Player& player, World& world, double dt) override;
+    virtual void enter(Player& player) override;
+    // virtual void exit(Player&) {}
+};
+
 class Jumping : public State {
+public:
+    virtual std::unique_ptr<State> handle_input(Player& player, const SDL_Event& event) override;
+    virtual std::unique_ptr<State> update(Player& player, World& world, double dt) override;
+    virtual void enter(Player& player) override;
+    // virtual void exit(Player&) {}
+};
+
+class GroundPound : public State {
+public:
+    virtual std::unique_ptr<State> handle_input(Player& player, const SDL_Event& event) override;
+    virtual std::unique_ptr<State> update(Player& player, World& world, double dt) override;
+    virtual void enter(Player& player) override;
+    // virtual void exit(Player&) {}
+};
+
+class Dive : public State {
 public:
     virtual std::unique_ptr<State> handle_input(Player& player, const SDL_Event& event) override;
     virtual std::unique_ptr<State> update(Player& player, World& world, double dt) override;

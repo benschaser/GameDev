@@ -4,6 +4,7 @@
 #include "vec.h"
 #include "physics.h"
 #include "fsm.h"
+#include "command.h"
 #include <SDL2/SDL.h>
 #include <memory>
 
@@ -13,6 +14,7 @@ class World;
 class Player {
 public:
     Player(const Vec<double>& position, const Vec<int>& size);
+    
     void handle_input(const SDL_Event& event);
     void update(World& world, double dt);
     std::pair<Vec<double>, Color> get_sprite() const;

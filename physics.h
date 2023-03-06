@@ -1,7 +1,7 @@
 #pragma once
 #include "vec.h"
 
-constexpr double gravity = -20;
+constexpr double gravity = -30;
 constexpr double damping = 0.92;
 constexpr double terminal_velocity = 160.0;
 
