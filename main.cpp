@@ -2,6 +2,7 @@
 #include "player.h"
 #include "world.h"
 #include "camera.h"
+#include "command.h"
 #include <SDL2/SDL.h>
 #include <iostream>
 #include <chrono>
@@ -25,7 +26,6 @@ int main() {
     // camera
     int tilesize{64};
     Camera camera{graphics, tilesize};
-    camera.move_to({10, 5});
     
     bool running{true};
     bool grid_on{false};
@@ -49,7 +49,10 @@ int main() {
             } 
             // pass the rest of the events to the player who will
             // react to keypresses by moving
-            player.handle_input(event);
+            auto command = player.handle_input(event);
+            if (command) {
+                command->execute(player, world);
+            }
         }
 
         // move the player in the world
@@ -58,14 +61,6 @@ int main() {
             player.update(world, dt);
             camera.move_to(player.get_sprite().first);
             camera.update(dt);
-
-            // Vec<double> pos = player.get_sprite().first;
-            
-            // if (pos.y < (world.tilemap.height / 2)) {
-            //     pos.y = world.tilemap.height / 2;
-            // }
-            // camera.move_to(pos);
-            
             
             lag -= dt;
         }
