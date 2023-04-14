@@ -3,6 +3,7 @@
 #include "graphics.h"
 #include "tilemap.h"
 #include "vec.h"
+#include "player.h"
 #include <iostream>
 
 constexpr double v_factor = 2.5;
@@ -19,8 +20,9 @@ void Camera::move_to(const Vec<double>& new_location) {
 
 void Camera::update(double dt) {
     location += velocity * dt;
-    if (location.y < lower_bound) {
-        location.y = lower_bound;
+    if (location.y < (graphics.height / 64) / 2 + 3) {
+        // location.y = lower_bound;
+        location.y = (graphics.height / 64) / 2 + 3;
     }
     calculate_visible_tiles();
 }
@@ -47,6 +49,8 @@ void Camera::render(const Vec<double>& position, const Color& color,
 }
 
 void Camera::render(const Tilemap& tilemap, bool grid_on) const {
+    // screen to world conversion
+    // calculate min and max world coordinates and only draw those
     int xmin = std::max(0, visible_min.x);
     int ymin = std::max(0, visible_min.y);
     int xmax = std::min(visible_max.x, tilemap.width - 1);
@@ -56,18 +60,30 @@ void Camera::render(const Tilemap& tilemap, bool grid_on) const {
     for (int y = ymin; y <= ymax; ++y) {
         for (int x = xmin; x <= xmax; ++x) {
             const Tile& tile = tilemap(x, y);
-            Vec<double> position{static_cast<double>(x),
-                                 static_cast<double>(y)};
-            if (tile == Tile::Platform) {
-                render(position, {0, 255, 0, 255});
-            } else {
-                render(position, {0, 127, 127, 255});
-            }
-
+            Vec<double> position{static_cast<double>(x), static_cast<double>(y)};
+            render(position, tile.sprite);
             if (grid_on) {
-                render(position, {0, 0, 0, 255}, false);
+                render(position, Color{0, 0, 0, 255}, false);
             }
         }
+    }
+}
+
+void Camera::render(const Vec<double>& position, const Sprite& sprite) const {
+    Vec<int> pixel = world_to_screen(position);
+    pixel.y += tilesize / 2; // shift sprite bottom center down to bottom of tile
+    graphics.draw_sprite(pixel, sprite);
+}
+
+void Camera::render(const Player& player) const {
+    // render(player.physics.position, player.color);
+    render(player.physics.position, player.sprite);
+}
+
+void Camera::render(const std::vector<std::pair<Sprite, int>>& backgrounds) const {
+    for (auto [sprite, distance] : backgrounds) {
+        int shift = static_cast<int>(location.x / distance);
+        graphics.draw_sprite({-shift, 0}, sprite);
     }
 }
 

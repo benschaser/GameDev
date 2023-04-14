@@ -1,16 +1,24 @@
 #include "world.h"
+#include "player.h"
 #include <cmath>
 
-World::World(int width, int height)
-    :tilemap{width, height}{}
+// World::World(int width, int height)
+//     :tilemap{width, height}{}
 
-void World::add_platform(int x, int y, int width, int height) {
-    for (int i = 0; i < height; ++i){
-        for (int j = 0; j < width;j++){
-            tilemap(x+j, y+i) = Tile::Platform;
-        }
+World::World(const Level& level)
+    :tilemap{level.width, level.height}, backgrounds{level.backgrounds} {
+    
+    for (auto [position, tile] : level.tiles) {
+        tilemap(position.x, position.y) = tile;
     }
 }
+// void World::add_platform(int x, int y, int width, int height) {
+//     for (int i = 0; i < height; ++i){
+//         for (int j = 0; j < width;j++){
+//             tilemap(x+j, y+i) = Tile::Platform;
+//         }
+//     }
+// }
 void World::move_to(Vec<double>& position, const Vec<int>& size, Vec<double>& velocity) {
     // test sides first, if both collide then move backwards
     // bottom side
@@ -85,8 +93,30 @@ void World::move_to(Vec<double>& position, const Vec<int>& size, Vec<double>& ve
     }
 }
 
+// bool World::collides(const Vec<double>& position) const {
+//     int x = std::floor(position.x);
+//     int y = std::floor(position.y); 
+//     return tilemap(x,y) == Tile::Platform;
+// }
+
 bool World::collides(const Vec<double>& position) const {
     int x = std::floor(position.x);
-    int y = std::floor(position.y); 
-    return tilemap(x,y) == Tile::Platform;
+    int y = std::floor(position.y);
+    return tilemap(x, y).blocking;
+}
+
+std::shared_ptr<Command> World::touch_tiles(const Player& player) {
+    int x = std::floor(player.physics.position.x);
+    int y = std::floor(player.physics.position.y);
+    const Vec<int>& size = player.size;
+    const std::vector<Vec<int>> displacements{{0,0}, {size.x,0}, {0,size.y}, {size.x,size.y}};
+    for (const Vec<int>& displacement : displacements) {
+        Tile& tile = tilemap(x + displacement.x, y + displacement.y);
+        if (tile.command) {
+            auto command = tile.command;
+            tile.command = nullptr;
+            return command;
+        }
+    }
+    return nullptr;
 }

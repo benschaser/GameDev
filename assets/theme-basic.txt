@@ -1,0 +1,26 @@
+load-spritesheet tileset.txt
+load-spritesheet decors.txt
+load-spritesheet characters.txt
+load-spritesheet objects.txt
+
+load-sounds sounds.txt
+
+background space-bkg-1.png 2 4
+background space-mid-1.png 2 1
+
+tile q grass_left true
+tile w grass_center true
+tile e grass_right true
+
+tile a dirt_left false
+tile s dirt_center false
+tile d dirt_right false
+
+tile r castle_left true
+tile t castle_center true
+tile y castle_right true
+
+tile T tree false
+tile B bush false
+
+tile x treasure_chest false end_game

@@ -1,6 +1,6 @@
 #include "fsm.h"
 #include "player.h"
-#include "world.h"
+#include "engine.h"
 #include <iostream>
 
 
@@ -17,27 +17,30 @@ bool arrow_right = false;
 //////////////////
 // State
 //////////////////
-std::unique_ptr<State> State::update(Player& player, World& world, double dt) {
+std::unique_ptr<State> State::update(Player& player, Engine& engine, double dt) {
     Physics old = player.physics;
     player.physics.update(dt);
 
     // attempt to move in x first
     Vec<double> future{player.physics.position.x, old.position.y};
     Vec<double> vx{player.physics.velocity.x, 0};
-    world.move_to(future, player.size, vx);
+    engine.world->move_to(future, player.size, vx);
 
     // attempt to move in y
     Vec<double> vy{0, player.physics.velocity.y};
     future.y = player.physics.position.y;
-    world.move_to(future, player.size, vy);
+    engine.world->move_to(future, player.size, vy);
 
     // update player pos
     player.physics.position = future;
     player.physics.velocity = {vx.x, vy.y};
 
-    // landing on platform
+    // observe if current tile has command
+    auto command = engine.world->touch_tiles(player);
+    if (command) {
+        command->execute(player, engine);
+    }    
     
-    // std::cout << "Left=" << arrow_left << "  Right=" << arrow_right << '\n';
     return nullptr;
 }
 
@@ -76,9 +79,12 @@ std::unique_ptr<State> Standing::handle_input(Player& player, const SDL_Event& e
     return nullptr;
 }
 
-std::unique_ptr<State> Standing::update(Player& player, World& world, double dt) {
-    State::update(player, world, dt);
+std::unique_ptr<State> Standing::update(Player& player, Engine& engine, double dt) {
+    State::update(player, engine, dt);
     player.physics.velocity.x *= damping;
+
+    player.standing.update(dt);
+    player.sprite = player.standing.get_sprite();
 
     if (player.physics.velocity.y < 0) {
         return std::make_unique<InAir>();
@@ -87,7 +93,11 @@ std::unique_ptr<State> Standing::update(Player& player, World& world, double dt)
     return nullptr;
 }
 
-void Standing::enter(Player& player) {
+void Standing::enter(Player& player, Engine& engine) {
+    // player.color = {255, 0, 0, 255};
+    
+    player.standing.reset();
+    player.standing.flip(player.sprite.flip);
     player.next_command = std::make_unique<Stop>();
 }
 
@@ -113,8 +123,12 @@ std::unique_ptr<State> Walking::handle_input(Player& player, const SDL_Event& ev
     return nullptr;
 }
 
-std::unique_ptr<State> Walking::update(Player& player, World& world, double dt) {
-    State::update(player, world, dt);
+std::unique_ptr<State> Walking::update(Player& player, Engine& engine, double dt) {
+    State::update(player, engine, dt);
+    // engine.audio.play_sound("running");
+
+    player.running.update(dt);
+    player.sprite = player.running.get_sprite();
 
     if (player.physics.velocity.y < 0.0) {
         return std::make_unique<InAir>();
@@ -123,10 +137,17 @@ std::unique_ptr<State> Walking::update(Player& player, World& world, double dt) 
     return nullptr;
 }
 
-void Walking::enter(Player& player) {
-    player.physics.velocity.y = 0.0;
-    // player.next_command = std::make_unique<Accelerate>(player.physics.acceleration.x);
+void Walking::enter(Player& player, Engine& engine) {
+    // player.physics.velocity.y = 0.0;
+    player.next_command = std::make_unique<Accelerate>(player.physics.acceleration.x);
+    player.running.reset();
+    player.running.flip(player.physics.acceleration.x < 0);
+    engine.audio.play_sound("running", false, true);
     player.color = {200, 160, 160, 255};
+}
+
+void Walking::exit(Player&, Engine& engine) {
+    engine.audio.stop_sound();
 }
 
 //////////////////
@@ -145,16 +166,17 @@ std::unique_ptr<State> Jumping::handle_input(Player& player, const SDL_Event& ev
     return nullptr;
 }
 
-std::unique_ptr<State> Jumping::update(Player& player, World& world, double dt) {
-    State::update(player, world, dt);
+std::unique_ptr<State> Jumping::update(Player& player, Engine& engine, double dt) {
+    State::update(player, engine, dt);
     return std::make_unique<InAir>();
 }
 
-void Jumping::enter(Player& player) {
-    // player.next_command = std::make_unique<Jump>(player.jump_velocity);
-    player.color = {0, 0, 255, 255};
-    player.physics.acceleration.x = 0;
-    player.physics.velocity.y = player.jump_velocity;
+void Jumping::enter(Player& player, Engine& engine) {
+    player.next_command = std::make_unique<Jump>(player.jump_velocity);
+    // player.color = {0, 0, 255, 255};
+    engine.audio.play_sound("jumping");
+    // player.physics.acceleration.x = 0;
+    // player.physics.velocity.y = player.jump_velocity;
 }
 
 //////////////////
@@ -164,10 +186,14 @@ std::unique_ptr<State> InAir::handle_input(Player& player, const SDL_Event& even
     if (event.type == SDL_KEYDOWN) {
         SDL_Keycode key = event.key.keysym.sym;
         if (key == SDLK_DOWN && arrow_left) {
+            player.falling.flip(true);
+            player.jumping.flip(true);
             player.physics.velocity.x = -diving_velocity;
             return std::make_unique<Diving>();
         }
         else if (key == SDLK_DOWN && arrow_right) {
+            player.falling.flip(false);
+            player.jumping.flip(false);
             player.physics.velocity.x = diving_velocity;
             return std::make_unique<Diving>();
         }
@@ -177,11 +203,15 @@ std::unique_ptr<State> InAir::handle_input(Player& player, const SDL_Event& even
         else if (key == SDLK_LEFT) {
             arrow_left = true;
             arrow_right = false;
+            player.falling.flip(true);
+            player.jumping.flip(true);
             player.physics.acceleration.x = -in_air_acceleration;
         }
         else if (key == SDLK_RIGHT) {
             arrow_right = true;
             arrow_left = false;
+            player.falling.flip(false);
+            player.jumping.flip(false);
             player.physics.acceleration.x = in_air_acceleration;
         }
     }
@@ -189,34 +219,49 @@ std::unique_ptr<State> InAir::handle_input(Player& player, const SDL_Event& even
         SDL_Keycode key = event.key.keysym.sym;
         if (key == SDLK_LEFT) {
             arrow_left = false;
+            player.physics.acceleration.x = 0;
         }
         else if (key == SDLK_RIGHT) {
             arrow_right = false;
+            player.physics.acceleration.x = 0;
         }
     }
+
     return nullptr;
 }
 
-std::unique_ptr<State> InAir::update(Player& player, World& world, double dt) {
-    State::update(player, world, dt);
+std::unique_ptr<State> InAir::update(Player& player, Engine& engine, double dt) {
+    State::update(player, engine, dt);
 
-    if (on_platform(player, world) && player.physics.velocity.y == 0) {
+    if (on_platform(player, *engine.world) && player.physics.velocity.y == 0) {
         if (arrow_left) {
+            player.physics.acceleration.x = -player.walk_acceleration;
             return std::make_unique<Walking>();
         }
         else if (arrow_right) {
+            player.physics.acceleration.x = player.walk_acceleration;
             return std::make_unique<Walking>();
         }
         else {
+            engine.audio.play_sound("landing");
             return std::make_unique<Standing>();
         }
+    }
+    if (player.physics.velocity.y < 0) {
+        player.sprite = player.falling.get_sprite();
+    }
+    
+    else {
+        player.sprite = player.jumping.get_sprite();
     }
 
     return nullptr;
 }
 
-void InAir::enter(Player& player) {
-    // player.next_command = std::make_unique<GroundPound>();
+void InAir::enter(Player& player, Engine& engine) {
+    player.next_command = std::make_unique<Accelerate>(player.physics.acceleration.x);
+    player.jumping.flip(player.physics.velocity.x < 0);
+    player.falling.flip(player.physics.velocity.x < 0);
     player.color = {0, 0, 255, 255};
 }
 
@@ -227,20 +272,23 @@ std::unique_ptr<State> GroundPounding::handle_input(Player& player, const SDL_Ev
     return nullptr;
 }
 
-std::unique_ptr<State> GroundPounding::update(Player& player, World& world, double dt) {
-    State::update(player, world, dt);
-    if (on_platform(player, world) && player.physics.velocity.y == 0) {
+std::unique_ptr<State> GroundPounding::update(Player& player, Engine& engine, double dt) {
+    State::update(player, engine, dt);
+    player.grounding.update(dt);
+
+    player.sprite = player.grounding.get_sprite();
+    if (on_platform(player, *engine.world) && player.physics.velocity.y == 0) {
         return std::make_unique<Standing>();
     }
 
     return nullptr;
 }
 
-void GroundPounding::enter(Player& player) {
-    // player.next_command = std::make_unique<GroundPound>();
+void GroundPounding::enter(Player& player, Engine& engine) {
+    player.next_command = std::make_unique<GroundPound>();
     player.color = {255, 0, 255, 255};
-    player.physics.velocity.x = 0.0;
-    player.physics.velocity.y = groundpound_velocity;
+    // player.physics.velocity.x = 0.0;
+    // player.physics.velocity.y = groundpound_velocity;
 }
 
 //////////////////
@@ -260,9 +308,9 @@ std::unique_ptr<State> Diving::handle_input(Player& player, const SDL_Event& eve
     return nullptr;
 }
 
-std::unique_ptr<State> Diving::update(Player& player, World& world, double dt) {
-    State::update(player, world, dt);
-    if (on_platform(player, world)) {
+std::unique_ptr<State> Diving::update(Player& player, Engine& engine, double dt) {
+    State::update(player, engine, dt);
+    if (on_platform(player, *engine.world)) {
         if (arrow_left) {
             player.physics.acceleration.x = -player.walk_acceleration;
             return std::make_unique<Walking>();
@@ -277,8 +325,8 @@ std::unique_ptr<State> Diving::update(Player& player, World& world, double dt) {
     return nullptr;
 }
 
-void Diving::enter(Player& player) {
-    // player.next_command = std::make_unique<Dive>(groundpound_velocity, player.physics.velocity.x);
-    player.physics.velocity.y = groundpound_velocity;
+void Diving::enter(Player& player, Engine& engine) {
+    player.next_command = std::make_unique<Dive>(player.physics.velocity.x);
+    // player.physics.velocity.y = groundpound_velocity;
     player.color = {0, 255, 255, 255};
 }

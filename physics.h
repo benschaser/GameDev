@@ -2,8 +2,8 @@
 #include "vec.h"
 
 constexpr double gravity = -20;
-constexpr double damping = 0.8;
-constexpr double terminal_velocity = 16.0;
+constexpr double damping = 0.7;
+constexpr double terminal_velocity = 12.0;
 constexpr double in_air_acceleration = 10.0;
 constexpr double in_air_terminal_velocity = 5.0;
 constexpr double groundpound_velocity = -15;

@@ -2,6 +2,10 @@
 
 #include <SDL2/SDL.h>
 #include <string>
+#include <vector>
+#include <unordered_map>
+#include "sprite.h"
+#include "animatedsprite.h"
 
 class Color {
 public:
@@ -13,6 +17,12 @@ public:
     Graphics(const std::string& title, int window_width, int window_height);
     ~Graphics();
 
+    void load_spritesheet(const std::string& filename);
+    Sprite get_sprite(const std::string& name) const;
+    AnimatedSprite get_animated_sprite(const std::string& name, double dt_per_frame, bool random_start = false, bool shuffle_order = false) const;
+    void draw_sprite(const Vec<int>& pixel, const Sprite& sprite);
+    Sprite load_image(const std::string& filename);
+
     void clear();
     void draw(const SDL_Rect& rect, const Color& color, bool filled=true);
     void update();
@@ -21,4 +31,10 @@ public:
 private:
     SDL_Window* window;
     SDL_Renderer* renderer;
+
+    std::vector<SDL_Texture*> textures;
+    std::unordered_map<std::string, int> texture_ids;
+    std::unordered_map<std::string, std::vector<Sprite>> sprites;
+
+    int get_texture_id(const std::string& image_filename);
 };

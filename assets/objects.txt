@@ -1,0 +1,4 @@
+ex-spritesheet.png
+none 0 0 16 16 4
+treasure_chest 336 304 16 16 4
+hole 96 144 16 16 4 

@@ -1,22 +1,30 @@
 #include "player.h"
-#include "world.h"
+#include "engine.h"
 #include <iostream>
 
-Player::Player(const Vec<double>& position, const Vec<int>& size)
+Player::Player(Engine& engine, const Vec<double>& position, const Vec<int>& size)
     :size{size} {
         physics.position = position;
         physics.acceleration.y = gravity;
+        standing = engine.graphics.get_animated_sprite("astronaut_standing", 0.1, false, false);
+        jumping = engine.graphics.get_animated_sprite("astronaut_jumping", 0.1, false, false);
+        running = engine.graphics.get_animated_sprite("astronaut_running", 0.05, false, false);
+        falling = engine.graphics.get_animated_sprite("astronaut_falling", 0.1, false, false);
+        grounding = engine.graphics.get_animated_sprite("astronaut_grounding", 0.04, false, false);
+
+
+        sprite = standing.get_sprite();
 
         state = std::make_unique<Standing>();
-        state->enter(*this);
+        state->enter(*this, engine);
     }
 
-std::unique_ptr<Command> Player::handle_input(const SDL_Event& event) {
+std::unique_ptr<Command> Player::handle_input(const SDL_Event& event, Engine& engine) {
     auto new_state = state->handle_input(*this, event);
     if (new_state) {
-        state->exit(*this);
+        state->exit(*this, engine);
         state = std::move(new_state);
-        state->enter(*this);
+        state->enter(*this, engine);
     }
 
     auto next = std::move(next_command);
@@ -24,16 +32,16 @@ std::unique_ptr<Command> Player::handle_input(const SDL_Event& event) {
     return next;
 }
 
-void Player::update(World& world, double dt) {
-    auto new_state = state->update(*this, world, dt);
+void Player::update(Engine& engine, double dt) {
+    auto new_state = state->update(*this, engine, dt);
     if (new_state) {
-        state->exit(*this);
+        state->exit(*this, engine);
         state = std::move(new_state);
-        state->enter(*this);
+        state->enter(*this, engine);
     }
     
     if (next_command) {
-        next_command->execute(*this, world);
+        next_command->execute(*this, engine);
         next_command = nullptr;
     }
     

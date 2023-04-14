@@ -1,23 +1,26 @@
 #pragma once
+#include <memory>
+#include <vector>
+#include <string>
 
 class Player;
-class World;
+class Engine;
 
 class Command {
 public:
     virtual ~Command() {}
-    virtual void execute(Player& player, World& world) = 0;
+    virtual void execute(Player& player, Engine& engine) = 0;
 };
 
 class Stop : public Command {
 public:
-    void execute(Player& player, World& world) override;
+    void execute(Player& player, Engine& engine) override;
 };
 
 class Accelerate : public Command {
 public:
     Accelerate(double acceleration);
-    void execute(Player& player, World& world) override;
+    void execute(Player& player, Engine& engine) override;
 private:
     double acceleration;
 };
@@ -25,37 +28,45 @@ private:
 class Jump : public Command {
 public:
     Jump(double velocity);
-    void execute(Player& player, World& world) override;
+    void execute(Player& player, Engine& engine) override;
 private:
     double velocity;
 };
 
-// class MoveInAir : public Command {
-// public:
-//     MoveInAir(double acceleration);
-//     void execute(Player& player, World& world) override;
-// private:
-//     double acceleration;
-// };
-
 class GroundPound : public Command {
 public:
     GroundPound();
-    void execute(Player& player, World& world) override;
+    void execute(Player& player, Engine& engine) override;
 };
-
-// class MoveInAir : public Command {
-// public:
-//     MoveInAir(double acceleration);
-//     void execute(Player& player, World& world) override;
-// private:
-//     double acceleration;
-// };
 
 class Dive : public Command {
 public:
     Dive(double vx);
-    void execute(Player& player, World& world) override;
+    void execute(Player& player, Engine& engine) override;
 private:
     double vx;
 };
+
+class EndGame : public Command {
+public:
+    void execute(Player& player, Engine& engine) override;
+};
+
+class PlaySound : public Command {
+public:
+    PlaySound(std::string sound_name, bool is_background);
+    void execute(Player& player, Engine& engine) override;
+private:
+    std::string sound_name;
+    bool is_background;
+};
+
+class LoadLevel : public Command {
+public:
+    LoadLevel(const std::string& fiilename);
+    void execute(Player& player, Engine& engine) override;
+private:
+    std::string filename;
+};
+
+std::shared_ptr<Command> create_command(std::string command_name, std::vector<std::string> arguments);

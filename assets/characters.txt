@@ -1,0 +1,7 @@
+spritesheet.png
+
+astronaut_standing 0 0 32 64 2
+astronaut_running 0 64 32 64 2 9
+astronaut_jumping 32 128 32 64 2
+astronaut_falling 64 128 32 64 2
+astronaut_grounding 0 192 32 64 2 5

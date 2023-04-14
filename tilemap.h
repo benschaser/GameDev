@@ -1,7 +1,14 @@
 #pragma once
 #include <vector>
+#include "sprite.h"
+#include "command.h"
 
-enum class Tile { Open, Platform };
+class Tile {
+public:
+    Sprite sprite;
+    bool blocking{false};
+    std::shared_ptr<Command> command{nullptr};
+};
 
 class Tilemap {
 public:
