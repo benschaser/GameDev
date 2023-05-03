@@ -12,6 +12,8 @@ public:
     void load_sounds(const std::string& filename);
     void play_sound(const std::string& sound_name, bool is_background = false, bool loop = false);
     void stop_sound();
+    void stop_background();
+
 private:
     std::unordered_map<std::string, Mix_Chunk*> sounds;
 };

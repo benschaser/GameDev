@@ -24,6 +24,16 @@ void Camera::update(double dt) {
         // location.y = lower_bound;
         location.y = (graphics.height / 64) / 2 + 3;
     }
+    else if (location.y > graphics.level_height - 7) {
+        location.y = graphics.level_height - 7;
+    }
+
+    if (location.x < 16) {
+        location.x = 16;
+    }
+    else if (location.x > graphics.level_width - 16) {
+        location.x = graphics.level_width - 16;
+    }
     calculate_visible_tiles();
 }
 
@@ -75,7 +85,7 @@ void Camera::render(const Vec<double>& position, const Sprite& sprite) const {
     graphics.draw_sprite(pixel, sprite);
 }
 
-void Camera::render(const Player& player) const {
+void Camera::render(const Entity& player) const {
     // render(player.physics.position, player.color);
     render(player.physics.position, player.sprite);
 }

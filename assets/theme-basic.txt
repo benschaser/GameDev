@@ -1,6 +1,6 @@
 load-spritesheet tileset.txt
 load-spritesheet decors.txt
-load-spritesheet characters.txt
+load-spritesheet characters1.txt
 load-spritesheet objects.txt
 
 load-sounds sounds.txt
@@ -24,3 +24,6 @@ tile T tree false
 tile B bush false
 
 tile x treasure_chest false end_game
+
+enemy M monster 40
+enemy l troll -20

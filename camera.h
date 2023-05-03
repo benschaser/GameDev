@@ -1,6 +1,7 @@
 #pragma once
 
 #include "vec.h"
+#include "entity.h"
 
 // forward declarations
 class Color;
@@ -20,7 +21,7 @@ public:
     void render(const Vec<double>& position, const Color& color, bool filled = true) const;
     void render(const Tilemap& tilemap, bool grid_on = false) const;
     void render(const Vec<double>& position, const Sprite& sprite) const;
-    void render(const Player& player) const;
+    void render(const Entity& player) const;
     void render(const std::vector<std::pair<Sprite, int>>& backgrounds) const;
 
 private:

@@ -1,0 +1,3 @@
+decors-1.png
+dish 0 0 64 64 2
+antenna 64 0 64 64 2

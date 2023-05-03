@@ -5,6 +5,7 @@
 #include "vec.h"
 #include "sprite.h"
 #include "tilemap.h"
+#include "enemytype.h"
 
 class Graphics;
 class Audio;
@@ -19,6 +20,8 @@ public:
 
     std::unordered_map<char, Tile> tile_types;
     std::vector<std::pair<Vec<int>, Tile>> tiles;
+    std::unordered_map<char, std::function<EnemyType(Graphics&)>> enemy_types;
+    std::vector<std::pair<Vec<double>, EnemyType>> enemies;
     std::vector<std::pair<Sprite, int>> backgrounds;
 private:
     void load(Graphics& graphics, Audio& audio);

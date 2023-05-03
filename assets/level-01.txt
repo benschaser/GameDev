@@ -1,20 +1,20 @@
 theme-spaceship.txt
-oooooooo[                                       ]oooooooo
-oooooooo[                                       ]oooooooo
-oooooooo[                                       ]oooooooo
-oooooooo[                                       ]oooooooo
-oooooooo[                                       ]oooooooo
-oooooooo[                                       ]oooooooo
-oooooooo[     zxxxc                             ]oooooooo
-oooooooo[                                  =    ]oooooooo
-oooooooo[                   +              |    ]oooooooo
-oooooooo[               vbbbbbbbn          |    ]oooooooo
-oooooooo[               iooooooop          |    ]oooooooo
-oooooooo[ P             iooooooop          |    ]oooooooo
-qwwwwwwwwwwwwwwwuuuuasssssssssssssssduuuuwwwwwwwwwwwwwwwe
-rttttttttttttttyooooooooooooooooooooooooortttttttttttttty
-rttttttttttttttyooooooooooooooooooooooooortttttttttttttty
-rtttttttttttttttwwwwwwwwwwwwwwwwwwwwwwwwwttttttttttttttty
-rttttttttttttttttttttttttttttttttttttttttttttttttttttttty
-rttttttttttttttttttttttttttttttttttttttttttttttttttttttty
-rttttttttttttttttttttttttttttttttttttttttttttttttttttttty
+oooooooo[p                                       i]oooooooo
+oooooooo[p                                       i]oooooooo
+oooooooo[p                                       i]oooooooo
+oooooooo[p                                       i]oooooooo
+oooooooo[p                                       i]oooooooo
+oooooooo[p       D                               i]oooooooo
+oooooooo[p     zxxxc                             i]oooooooo
+oooooooo[p                                  =    i]oooooooo
+oooooooo[p                   A $            |    i]oooooooo
+oooooooo[p               vbbbbbbbn          |    i]oooooooo
+oooooooo[p               iooooooop          |    i]oooooooo
+oooooooo[p P             iooooooop D        |M   i]oooooooo
+qwwwwwwwwwwwwwwweuuuuasssssssssssssssduuuuqwwwwwwwwwwwwwwwe
+rtttttttttttttttyooooooooooooooooooooooooorttttttttttttttty
+rtttttttttttttttyooooooooooooooooooooooooorttttttttttttttty
+rttttttttttttttttwwwwwwwwwwwwwwwwwwwwwwwwwtttttttttttttttty
+rttttttttttttttttttttttttttttttttttttttttttttttttttttttttty
+rttttttttttttttttttttttttttttttttttttttttttttttttttttttttty
+rttttttttttttttttttttttttttttttttttttttttttttttttttttttttty

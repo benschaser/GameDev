@@ -5,7 +5,7 @@
 //////////////////
 // Stop
 //////////////////
-void Stop::execute(Player& player, Engine& engine) {
+void Stop::execute(Entity& player, Engine&) {
     // player.color = {255, 0, 0, 255};
     player.physics.velocity.y = 0.0;
     player.physics.acceleration.x = 0.0;
@@ -17,7 +17,7 @@ void Stop::execute(Player& player, Engine& engine) {
 Accelerate::Accelerate(double acceleration)
     :acceleration{acceleration} {}
 
-void Accelerate::execute(Player& player, Engine& engine) {
+void Accelerate::execute(Entity& player, Engine&) {
     // player.physics.velocity.y = 0.0;
     player.physics.acceleration.x = acceleration;
 }
@@ -28,7 +28,7 @@ void Accelerate::execute(Player& player, Engine& engine) {
 Jump::Jump(double velocity)
     :velocity{velocity} {}
 
-void Jump::execute(Player& player, Engine& engine) {
+void Jump::execute(Entity& player, Engine&) {
     player.physics.acceleration.x = 0;
     player.physics.velocity.y = velocity;
     // engine.audio.play_sound("jumping");
@@ -40,7 +40,7 @@ void Jump::execute(Player& player, Engine& engine) {
 //////////////////
 GroundPound::GroundPound() {}
 
-void GroundPound::execute(Player& player, Engine& engine) {
+void GroundPound::execute(Entity& player, Engine&) {
     player.physics.velocity.x = 0;
     player.physics.velocity.y = groundpound_velocity;
 }
@@ -51,7 +51,7 @@ void GroundPound::execute(Player& player, Engine& engine) {
 Dive::Dive(double vx)
     :vx{vx} {}
 
-void Dive::execute(Player& player, Engine& engine) {
+void Dive::execute(Entity& player, Engine&) {
     player.physics.velocity.x = vx;
     player.physics.velocity.y = groundpound_velocity;
 }
@@ -59,21 +59,22 @@ void Dive::execute(Player& player, Engine& engine) {
 //////////////////
 // Game Changes
 //////////////////
-void EndGame::execute(Player&, Engine& engine) {
+void EndGame::execute(Entity&, Engine& engine) {
     engine.stop();
 }
 
 PlaySound::PlaySound(std::string sound_name, bool is_background)
     :sound_name{sound_name}, is_background{is_background} {}
 
-void PlaySound::execute(Player&, Engine& engine) {
+void PlaySound::execute(Entity&, Engine& engine) {
     engine.audio.play_sound(sound_name, is_background);
 }
 
-LoadLevel::LoadLevel(const std::string& fiilename)
+LoadLevel::LoadLevel(const std::string& filename)
     :filename{filename} {}
 
-void LoadLevel::execute(Player& player, Engine& engine) {
+void LoadLevel::execute(Entity&, Engine& engine) {
+    engine.audio.stop_background();
     engine.load_level("assets/" + filename);
 }
 

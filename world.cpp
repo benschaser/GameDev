@@ -6,10 +6,13 @@
 //     :tilemap{width, height}{}
 
 World::World(const Level& level)
-    :tilemap{level.width, level.height}, backgrounds{level.backgrounds} {
+    :tilemap{level.width, level.height}, backgrounds{level.backgrounds}, quadtree{AABB{{level.width / 2.0, level.height / 2.0}, {level.width / 2.0, level.height / 2.0}}} {
     
     for (auto [position, tile] : level.tiles) {
         tilemap(position.x, position.y) = tile;
+    }
+    for (auto [position, type] : level.enemies) {
+        enemies.push_back(std::make_shared<Enemy>(position, Vec<int>{1,1}, type));
     }
 }
 // void World::add_platform(int x, int y, int width, int height) {
@@ -119,4 +122,12 @@ std::shared_ptr<Command> World::touch_tiles(const Player& player) {
         }
     }
     return nullptr;
+}
+
+void World::build_quadtree() {
+    quadtree.clear();
+
+    for (std::shared_ptr<Enemy> enemy : enemies) {
+        quadtree.insert(enemy.get());
+    }
 }

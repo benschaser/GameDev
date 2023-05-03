@@ -87,3 +87,6 @@ Audio::~Audio() {
  void Audio::stop_sound() {
     Mix_Pause(1);
  }
+ void Audio::stop_background() {
+    Mix_Pause(0);
+ }

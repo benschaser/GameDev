@@ -1,4 +1,4 @@
-tileset-1a.png
+tileset-1b.png
 floor-single 0 0 32 32 2
 floor-bottom-single 32 0 32 32 2
 floor-left 64 0 32 32 2
@@ -31,8 +31,8 @@ backwall-center 96 128 32 32 2
 backwall-right 128 128 32 32 2
 backwall-top 0 160 32 32 2
 
-backwall-start 128 128 32 32 2
-backwall-end 64 128 32 32 2
+backwall-start 96 128 32 32 2
+backwall-end 96 128 32 32 2
 
 
 

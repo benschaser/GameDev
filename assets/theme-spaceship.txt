@@ -1,6 +1,7 @@
 load-spritesheet tileset-1.txt
-load-spritesheet decors.txt
+load-spritesheet decors-1.txt
 load-spritesheet characters.txt
+load-spritesheet enemies.txt
 load-spritesheet objects.txt
 
 load-sounds sounds.txt
@@ -43,4 +44,8 @@ tile u backwall-top false
 tile [ backwall-start true
 tile ] backwall-end true
 
-tile + hole false load_level level-00.txt
+tile D dish false
+tile A antenna false load_level level-01.txt
+
+enemy M monster
+enemy $ troll

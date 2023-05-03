@@ -5,6 +5,7 @@
 #include "camera.h"
 #include "graphics.h"
 #include "audio.h"
+#include "combat.h"
 
 class Player;
 class Settings;
@@ -22,7 +23,6 @@ public:
     Camera camera;
     std::shared_ptr<World> world;
     Audio audio;
-
     std::shared_ptr<Player> player;
 private:
     bool running{true};

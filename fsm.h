@@ -60,3 +60,20 @@ public:
     virtual void enter(Player& player, Engine& engine) override;
     // virtual void exit(Player&) {}
 };
+
+class AttackAll : public State {
+public:
+    virtual std::unique_ptr<State> handle_input(Player& player, const SDL_Event& event) override;
+    // virtual std::unique_ptr<State> update(Player& player, Engine& engine, double dt) override;
+    virtual void enter(Player& player, Engine& engine) override;
+};
+
+class Hurting : public State {
+    virtual std::unique_ptr<State> handle_input(Player& player, const SDL_Event& event) override;
+    virtual std::unique_ptr<State> update(Player& player, Engine& engine, double dt) override;
+    virtual void enter(Player& player, Engine& engine) override;
+    virtual void exit(Player& player, Engine& engine) override;
+
+    double cooldown = 2.0;
+    double elapsed_time = 0.0;
+};

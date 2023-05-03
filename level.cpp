@@ -33,6 +33,8 @@ void Level::load(Graphics& graphics, Audio& audio) {
     // set level dimensions
     height = lines.size();
     width = lines.front().size();
+    graphics.level_height = height;
+    graphics.level_width = width;
 
     // ensure rectangular level
     bool rectangular = std::all_of(std::begin(lines), std::end(lines),
@@ -56,10 +58,16 @@ void Level::load(Graphics& graphics, Audio& audio) {
 
             // determine tiletype
             auto it = tile_types.find(symbol);
+            auto eit = enemy_types.find(symbol);
             if (it != tile_types.end()) { // found
                 Vec<int> position{x, height - y - 1};
                 const Tile& tile = it->second;
                 tiles.push_back({position, tile});
+            }
+            else if (eit != enemy_types.end()) {
+                Vec<double> position{static_cast<double>(x), static_cast<double>(height - 1 - y)};
+                const EnemyType& type = eit->second(graphics);
+                enemies.push_back({position, type});
             }
             else {
                 // error handle for player starting pos = (-1, -1)
@@ -153,6 +161,16 @@ void Level::load_theme(const std::string& filename, Graphics& graphics, Audio& a
             Sprite background = graphics.load_image("assets/" + filename);
             background.scale = scale;
             backgrounds.push_back({background, distance});
+        } else if (command == "enemy") {
+            char symbol;
+            std::string type_name;
+            // double acceleration;
+            ss >> symbol >> type_name;
+            if (!ss) {
+                throw std::runtime_error("Unable to load enemy");
+            }
+            auto generate_enemy_type = [=](Graphics& graphics) {return create_enemytype(graphics, type_name);};
+            enemy_types[symbol] = generate_enemy_type;
         } else if (command == "tile") {
             char symbol;
             std::string sprite_name;

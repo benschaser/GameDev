@@ -27,6 +27,8 @@ public:
     void draw(const SDL_Rect& rect, const Color& color, bool filled=true);
     void update();
     const int width, height;
+    int level_width = 0;
+    int level_height = 0;
     
 private:
     SDL_Window* window;

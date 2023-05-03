@@ -2,7 +2,9 @@
 #include "settings.h"
 #include "player.h"
 #include "level.h"
+#include "combat.h"
 #include <chrono>
+#include <iostream>
 
 // Engine::Engine(const Settings& settings)
 //     :graphics{settings.title, settings.screen_width, settings.screen_height},
@@ -68,12 +70,52 @@ void Engine::input() {
             command->execute(*player, *this);
         }
     }
+    for (auto enemy : world->enemies) {
+        auto command = enemy->next_action(*this);
+        if (command) {
+            command->execute(*enemy, *this);
+        }
+    }
 }
 
 void Engine::update(double dt) {
     player->update(*this, dt);
     camera.move_to(player->get_sprite().first);
     camera.update(dt);
+
+
+    // for (auto enemy : world->enemies) {
+    //     if (!enemy.combat.is_alive) {
+    //     }
+    // }
+    for (auto enemy : world->enemies) {
+        auto command = enemy->update(*this, dt);
+        if (command) {
+            command->execute(*enemy, *this);
+        }
+    }
+
+    // handle collisions between player and enemy
+    world->build_quadtree();
+    AABB player_box{player->physics.position, {1.0 * player->size.x, 1.0 * player->size.y}};
+    std::vector<Entity*> enemies = world->quadtree.query_range(player_box);
+    if (enemies.size() > 0) {
+        auto enemy = enemies.front();
+        enemy->combat.attack(*player);
+        // enter hurting state
+        std::cout << player->combat.health << '\n';
+        player->state->exit(*player, *this);
+        player->state = std::make_unique<Hurting>();
+        player->state->enter(*player, *this);
+    }
+    if (!player->combat.is_alive) {
+        EndGame endgame;
+        endgame.execute(*player, *this);
+        return;
+    }
+
+    // check for deaths
+    world->enemies.erase(std::remove_if(world->enemies.begin(),world->enemies.end(), [](std::shared_ptr<Enemy>enemy){return !enemy->combat.is_alive;}), world->enemies.end());
 }
 
 void Engine::render() {
@@ -84,6 +126,9 @@ void Engine::render() {
     // camera.render(position, color);
     camera.render(position, player->sprite);
     camera.render(*player);
+    for (auto enemy : world->enemies) {
+        camera.render(*enemy);
+    }
     graphics.update();
 }
 

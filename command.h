@@ -3,24 +3,24 @@
 #include <vector>
 #include <string>
 
-class Player;
+class Entity;
 class Engine;
 
 class Command {
 public:
     virtual ~Command() {}
-    virtual void execute(Player& player, Engine& engine) = 0;
+    virtual void execute(Entity& player, Engine& engine) = 0;
 };
 
 class Stop : public Command {
 public:
-    void execute(Player& player, Engine& engine) override;
+    void execute(Entity& player, Engine& engine) override;
 };
 
 class Accelerate : public Command {
 public:
     Accelerate(double acceleration);
-    void execute(Player& player, Engine& engine) override;
+    void execute(Entity& player, Engine& engine) override;
 private:
     double acceleration;
 };
@@ -28,7 +28,7 @@ private:
 class Jump : public Command {
 public:
     Jump(double velocity);
-    void execute(Player& player, Engine& engine) override;
+    void execute(Entity& player, Engine& engine) override;
 private:
     double velocity;
 };
@@ -36,26 +36,26 @@ private:
 class GroundPound : public Command {
 public:
     GroundPound();
-    void execute(Player& player, Engine& engine) override;
+    void execute(Entity& player, Engine& engine) override;
 };
 
 class Dive : public Command {
 public:
     Dive(double vx);
-    void execute(Player& player, Engine& engine) override;
+    void execute(Entity& player, Engine& engine) override;
 private:
     double vx;
 };
 
 class EndGame : public Command {
 public:
-    void execute(Player& player, Engine& engine) override;
+    void execute(Entity& player, Engine& engine) override;
 };
 
 class PlaySound : public Command {
 public:
     PlaySound(std::string sound_name, bool is_background);
-    void execute(Player& player, Engine& engine) override;
+    void execute(Entity& player, Engine& engine) override;
 private:
     std::string sound_name;
     bool is_background;
@@ -64,7 +64,7 @@ private:
 class LoadLevel : public Command {
 public:
     LoadLevel(const std::string& fiilename);
-    void execute(Player& player, Engine& engine) override;
+    void execute(Entity& player, Engine& engine) override;
 private:
     std::string filename;
 };

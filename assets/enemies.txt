@@ -1,0 +1,7 @@
+ex-spritesheet.png
+
+monster_standing 16 368 32 32 4 4
+monster_running 144 368 32 32 4 4
+
+troll_standing 16 272 32 32 4 4
+troll_running 144 272 32 32 4 4

@@ -65,6 +65,9 @@ std::unique_ptr<State> Standing::handle_input(Player& player, const SDL_Event& e
             player.physics.acceleration.x = player.walk_acceleration;
             return std::make_unique<Walking>();
         }
+        else if (key == SDLK_f) {
+            return std::make_unique<AttackAll>();
+        }
         
     }
     else if (event.type == SDL_KEYUP) {
@@ -93,7 +96,7 @@ std::unique_ptr<State> Standing::update(Player& player, Engine& engine, double d
     return nullptr;
 }
 
-void Standing::enter(Player& player, Engine& engine) {
+void Standing::enter(Player& player, Engine&) {
     // player.color = {255, 0, 0, 255};
     
     player.standing.reset();
@@ -104,7 +107,7 @@ void Standing::enter(Player& player, Engine& engine) {
 //////////////////
 // Walking
 //////////////////
-std::unique_ptr<State> Walking::handle_input(Player& player, const SDL_Event& event) {
+std::unique_ptr<State> Walking::handle_input(Player&, const SDL_Event& event) {
     if (event.type == SDL_KEYDOWN) {
         SDL_Keycode key = event.key.keysym.sym;
         if (key == SDLK_SPACE || key == SDLK_UP) {
@@ -153,7 +156,7 @@ void Walking::exit(Player&, Engine& engine) {
 //////////////////
 // Jumping
 //////////////////
-std::unique_ptr<State> Jumping::handle_input(Player& player, const SDL_Event& event) {
+std::unique_ptr<State> Jumping::handle_input(Player&, const SDL_Event& event) {
      if (event.type == SDL_KEYUP) {
         SDL_Keycode key = event.key.keysym.sym;
         if (key == SDLK_LEFT || key == SDLK_RIGHT) {
@@ -258,17 +261,16 @@ std::unique_ptr<State> InAir::update(Player& player, Engine& engine, double dt) 
     return nullptr;
 }
 
-void InAir::enter(Player& player, Engine& engine) {
+void InAir::enter(Player& player, Engine&) {
     player.next_command = std::make_unique<Accelerate>(player.physics.acceleration.x);
     player.jumping.flip(player.physics.velocity.x < 0);
     player.falling.flip(player.physics.velocity.x < 0);
-    player.color = {0, 0, 255, 255};
 }
 
 //////////////////
 // GroundPounding
 //////////////////
-std::unique_ptr<State> GroundPounding::handle_input(Player& player, const SDL_Event& event) {
+std::unique_ptr<State> GroundPounding::handle_input(Player&, const SDL_Event&) {
     return nullptr;
 }
 
@@ -284,9 +286,8 @@ std::unique_ptr<State> GroundPounding::update(Player& player, Engine& engine, do
     return nullptr;
 }
 
-void GroundPounding::enter(Player& player, Engine& engine) {
+void GroundPounding::enter(Player& player, Engine&) {
     player.next_command = std::make_unique<GroundPound>();
-    player.color = {255, 0, 255, 255};
     // player.physics.velocity.x = 0.0;
     // player.physics.velocity.y = groundpound_velocity;
 }
@@ -294,7 +295,7 @@ void GroundPounding::enter(Player& player, Engine& engine) {
 //////////////////
 // Diving
 //////////////////
-std::unique_ptr<State> Diving::handle_input(Player& player, const SDL_Event& event) {
+std::unique_ptr<State> Diving::handle_input(Player&, const SDL_Event& event) {
     if (event.type == SDL_KEYUP) {
         SDL_Keycode key = event.key.keysym.sym;
         if (key == SDLK_LEFT) {
@@ -304,7 +305,6 @@ std::unique_ptr<State> Diving::handle_input(Player& player, const SDL_Event& eve
             arrow_right = false;
         }
     }
-    return nullptr;
     return nullptr;
 }
 
@@ -325,8 +325,74 @@ std::unique_ptr<State> Diving::update(Player& player, Engine& engine, double dt)
     return nullptr;
 }
 
-void Diving::enter(Player& player, Engine& engine) {
+void Diving::enter(Player& player, Engine&) {
     player.next_command = std::make_unique<Dive>(player.physics.velocity.x);
     // player.physics.velocity.y = groundpound_velocity;
-    player.color = {0, 255, 255, 255};
+}
+
+//////////////////
+// AttackAll
+//////////////////
+std::unique_ptr<State> AttackAll::handle_input(Player& player, const SDL_Event& event) {
+    // std::cout << "handling input\n";
+    if (event.type == SDL_KEYUP) {
+        // std::cout << "keyup event\n";
+        SDL_Keycode key = event.key.keysym.sym;
+        if (key == SDLK_f) {
+            // std::cout << "leaving attack state\n";
+            return std::make_unique<Standing>();
+        }
+    }
+    return nullptr;
+}
+
+void AttackAll::enter(Player& player, Engine& engine) {
+    for (auto enemy : engine.world->enemies) {
+        player.combat.attack(*enemy);
+    }
+}
+
+//////////////////
+// Hurting
+//////////////////
+std::unique_ptr<State> Hurting::handle_input(Player& player, const SDL_Event& event) {
+    // std::cout << "handling input\n";
+    if (event.type == SDL_KEYDOWN) {
+        SDL_Keycode key = event.key.keysym.sym;
+        if (key == SDLK_LEFT) {
+            player.next_command = std::make_unique<Accelerate>(-player.walk_acceleration / 4);
+            player.sprite.flip = true;
+        }
+        else if (key == SDLK_RIGHT) {
+            player.next_command = std::make_unique<Accelerate>(player.walk_acceleration / 4);
+            player.sprite.flip = false;
+        }
+    }
+    if (event.type == SDL_KEYUP) {
+        SDL_Keycode key = event.key.keysym.sym;
+        if (key == SDLK_LEFT || key == SDLK_RIGHT) {
+            player.next_command = std::make_unique<Stop>();
+        }
+    }
+    return nullptr;
+}
+
+std::unique_ptr<State> Hurting::update(Player& player, Engine& engine, double dt) {
+    elapsed_time += dt;
+    if (elapsed_time >= cooldown) {
+        return std::make_unique<Standing>();
+    }
+
+    State::update(player, engine, dt);    
+
+    return nullptr;
+}
+
+void Hurting::enter(Player& player, Engine& engine) {
+    elapsed_time = 0;
+    player.combat.invincible = true;
+}
+
+void Hurting::exit(Player& player, Engine& engine) {
+    player.combat.invincible = false;
 }
