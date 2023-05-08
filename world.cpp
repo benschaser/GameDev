@@ -124,6 +124,12 @@ std::shared_ptr<Command> World::touch_tiles(const Player& player) {
     return nullptr;
 }
 
+void World::remove_inactive() {
+    enemies.erase(std::remove_if(enemies.begin(), enemies.end(), [](std::shared_ptr<Enemy>enemy){return !enemy->combat.is_alive;}), enemies.end());
+    projectiles.erase(std::remove_if(std::begin(projectiles), std::end(projectiles), [](const Projectile& projectile){return !projectile.combat.is_alive;}), std::end(projectiles));
+
+}
+
 void World::build_quadtree() {
     quadtree.clear();
 

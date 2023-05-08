@@ -108,3 +108,19 @@ void Camera::calculate_visible_tiles() {
     visible_max = center + num_tiles;
     visible_min = center - num_tiles;
 }
+
+void Camera::render_life(int current, int max) {
+    Sprite heart = graphics.get_sprite("heart");
+    Sprite empty_heart = graphics.get_sprite("empty_heart");
+
+    for (int i = 0; i < current; ++i) {
+        Vec<int> position{35, 65};
+        position.x += i * 64 + 10;
+        graphics.draw_sprite(position, heart);
+    }
+    for (int i = current; i < max; ++i) {
+        Vec<int> position{35, 65};
+        position.x += i * 64 + 10;
+        graphics.draw_sprite(position, empty_heart);
+    }
+}

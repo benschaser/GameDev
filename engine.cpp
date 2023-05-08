@@ -3,6 +3,7 @@
 #include "player.h"
 #include "level.h"
 #include "combat.h"
+#include "loadscreen.h"
 #include <chrono>
 #include <iostream>
 
@@ -94,6 +95,9 @@ void Engine::update(double dt) {
             command->execute(*enemy, *this);
         }
     }
+    for (auto& projectile : world->projectiles) {
+        projectile.update(*this, dt);
+    }
 
     // handle collisions between player and enemy
     world->build_quadtree();
@@ -103,11 +107,20 @@ void Engine::update(double dt) {
         auto enemy = enemies.front();
         enemy->combat.attack(*player);
         // enter hurting state
-        std::cout << player->combat.health << '\n';
+        // std::cout << player->combat.health << '\n';
         player->state->exit(*player, *this);
         player->state = std::make_unique<Hurting>();
         player->state->enter(*player, *this);
     }
+
+    for (auto & projectile : world->projectiles) {
+        AABB p_box{projectile.physics.position, {1.0*projectile.size.x, 1.0*projectile.size.y}};
+        std::vector<Entity*> entities = world->quadtree.query_range(p_box);
+        for (auto entity : entities) {
+            projectile.combat.attack(*entity);
+        }
+    }
+
     if (!player->combat.is_alive) {
         EndGame endgame;
         endgame.execute(*player, *this);
@@ -115,7 +128,8 @@ void Engine::update(double dt) {
     }
 
     // check for deaths
-    world->enemies.erase(std::remove_if(world->enemies.begin(),world->enemies.end(), [](std::shared_ptr<Enemy>enemy){return !enemy->combat.is_alive;}), world->enemies.end());
+    world->remove_inactive();
+    // world->enemies.erase(std::remove_if(world->enemies.begin(),world->enemies.end(), [](std::shared_ptr<Enemy>enemy){return !enemy->combat.is_alive;}), world->enemies.end());
 }
 
 void Engine::render() {
@@ -129,6 +143,10 @@ void Engine::render() {
     for (auto enemy : world->enemies) {
         camera.render(*enemy);
     }
+    for (auto& projectile : world->projectiles) {
+        camera.render(projectile);
+    }
+    camera.render_life(player->combat.health, player->combat.max_health);
     graphics.update();
 }
 
@@ -138,6 +156,11 @@ void Engine::run() {
     auto previous = std::chrono::high_resolution_clock::now();
     double lag{0.0};
     while (running) {
+        if (next_level) {
+            load_level(next_level.value());
+            audio.play_sound("background", true);
+            next_level.reset();
+        }
         auto current = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double> elapsed = current - previous;
         previous = current;
@@ -152,8 +175,28 @@ void Engine::run() {
         }
         render();
     }
+    setup_end_screen();
+
+    while (running) {
+        SDL_Event event;
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) {  // closing the window
+                running = false;
+                break;
+            }
+        }
+        graphics.clear();
+        camera.render(world->backgrounds);
+        graphics.update();
+    }
 }
 
 void Engine::stop() {
     running = false;
+}
+
+void Engine::setup_end_screen() {
+    running = true;
+    Loadscreen game_over{"assets/game-over.txt", graphics, audio};
+    world->backgrounds = game_over.backgrounds;
 }

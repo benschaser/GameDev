@@ -38,6 +38,18 @@ std::unique_ptr<Command> Enemy::update(Engine& engine, double dt) {
     physics.position = future;
     physics.velocity = {vx.x, vy.y};
 
+    if (combat.invincible) {
+        type.elapsed_time += dt;
+        if (type.elapsed_time >= type.cooldown) {
+            combat.invincible = false;
+            type.elapsed_time = 0;
+            physics.acceleration = type.acceleration;
+        }
+        else {
+
+        }
+    }
+
     // check for collision with wall
     if (vx.x == 0 && physics.acceleration.x != 0) {
         type.animation.flip(-physics.acceleration.x < 0);
@@ -53,5 +65,8 @@ std::unique_ptr<Command> Enemy::update(Engine& engine, double dt) {
 }
 
 std::unique_ptr<Command> Enemy::next_action(Engine& engine) {
+    if (combat.invincible) {
+        return hurting_behavior(engine, *this);
+    }
     return type.behavior(engine, *this);
 }

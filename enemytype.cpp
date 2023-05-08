@@ -31,14 +31,19 @@ std::unique_ptr<Command> standing_behavior(Engine&, Enemy&) {
     return std::make_unique<Stop>();
 }
 
+
+std::unique_ptr<Command> hurting_behavior(Engine&, Enemy& enemy) {
+    return std::make_unique<Stop>();
+}
+
 EnemyType create_troll(Graphics& graphics) {
     Vec<double> acceleration {-30, 0};
     AnimatedSprite sprite = graphics.get_animated_sprite("troll_running", 0.15, true, false);
-    return EnemyType{sprite, acceleration, 8, 2, default_behavior, 2};
+    return EnemyType{sprite, acceleration, 8, 2, 2, 0, default_behavior, 2};
 }
 
 EnemyType create_monster(Graphics& graphics) {
     Vec<double> acceleration {0, 0};
     AnimatedSprite sprite = graphics.get_animated_sprite("monster_standing", 0.15, true, false);
-    return EnemyType{sprite, acceleration, 6, 3, default_behavior, 6};
+    return EnemyType{sprite, acceleration, 6, 3, 3, 0, default_behavior, 6};
 }

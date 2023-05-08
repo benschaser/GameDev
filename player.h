@@ -6,6 +6,7 @@
 #include "fsm.h"
 #include "command.h"
 #include "entity.h"
+#include "projectile.h"
 #include <SDL2/SDL.h>
 #include <memory>
 
@@ -30,4 +31,6 @@ public:
     AnimatedSprite grounding;
     std::unique_ptr<State> state;
     std::unique_ptr<Command> next_command;
+
+    Projectile projectile;
 };

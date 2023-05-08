@@ -2,6 +2,7 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include "projectile.h"
 
 class Entity;
 class Engine;
@@ -45,6 +46,14 @@ public:
     void execute(Entity& player, Engine& engine) override;
 private:
     double vx;
+};
+
+class Fire : public Command {
+public:
+    Fire(Projectile projectile, Vec<double> position, Vec<double> velocity);
+    void execute(Entity& player, Engine& engine) override;
+private:
+    Projectile projectile;
 };
 
 class EndGame : public Command {

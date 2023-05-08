@@ -2,6 +2,7 @@
 #include "player.h"
 #include "engine.h"
 #include <iostream>
+#include <randomness.h>
 
 
 bool on_platform(const Player& player, const World& world) {
@@ -66,8 +67,26 @@ std::unique_ptr<State> Standing::handle_input(Player& player, const SDL_Event& e
             return std::make_unique<Walking>();
         }
         else if (key == SDLK_f) {
-            return std::make_unique<AttackAll>();
+            Vec<double> position{player.physics.position.x + player.size.x, player.physics.position.y + (player.size.y / 2)};
+            Vec<double> velocity{15, 0};
+            if (player.sprite.flip) {
+                position = {player.physics.position.x, player.physics.position.y + player.size.y};
+                velocity.x *= -1;
+            }
+            player.next_command = std::make_unique<Fire>(player.projectile, position, velocity);
         }
+        // else if (key == SDLK_f) {
+        //     // return std::make_unique<AttackAll>();
+        //     Vec<double> position = {player.physics.position.x + player.size.x, player.physics.position.y + player.size.y};
+        //     Vec<double> velocity = {5, 3};
+        //     velocity.x += randint(-1, 1);
+        //     velocity.y += randint(-1, 1);
+        //     if (player.sprite.flip) {
+        //         Vec<double> position = {player.physics.position.x, player.physics.position.y + player.size.y};
+        //         velocity.x *= -1;
+        //     }
+        //     player.next_command = std::make_unique<Fire>(player.projectile, position, velocity);
+        // }
         
     }
     else if (event.type == SDL_KEYUP) {
@@ -333,7 +352,7 @@ void Diving::enter(Player& player, Engine&) {
 //////////////////
 // AttackAll
 //////////////////
-std::unique_ptr<State> AttackAll::handle_input(Player& player, const SDL_Event& event) {
+std::unique_ptr<State> AttackAll::handle_input(Player&, const SDL_Event& event) {
     // std::cout << "handling input\n";
     if (event.type == SDL_KEYUP) {
         // std::cout << "keyup event\n";
@@ -388,11 +407,12 @@ std::unique_ptr<State> Hurting::update(Player& player, Engine& engine, double dt
     return nullptr;
 }
 
-void Hurting::enter(Player& player, Engine& engine) {
+void Hurting::enter(Player& player, Engine&) {
     elapsed_time = 0;
+    player.physics.velocity.x = 0;
     player.combat.invincible = true;
 }
 
-void Hurting::exit(Player& player, Engine& engine) {
+void Hurting::exit(Player& player, Engine&) {
     player.combat.invincible = false;
 }

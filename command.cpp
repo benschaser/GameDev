@@ -57,6 +57,20 @@ void Dive::execute(Entity& player, Engine&) {
 }
 
 //////////////////
+// Fire
+//////////////////
+Fire::Fire(Projectile projectile, Vec<double> position, Vec<double> velocity)
+    :projectile{projectile} {
+        this->projectile.physics.position = position;
+        this->projectile.physics.velocity = velocity;
+        this->projectile.physics.acceleration.y = -gravity;
+    }
+
+void Fire::execute(Entity&, Engine& engine) {
+    engine.world->projectiles.push_back(projectile);
+}
+
+//////////////////
 // Game Changes
 //////////////////
 void EndGame::execute(Entity&, Engine& engine) {
@@ -75,7 +89,7 @@ LoadLevel::LoadLevel(const std::string& filename)
 
 void LoadLevel::execute(Entity&, Engine& engine) {
     engine.audio.stop_background();
-    engine.load_level("assets/" + filename);
+    engine.next_level = "assets/" + filename;
 }
 
 std::shared_ptr<Command> create_command(std::string command_name, std::vector<std::string> arguments) {

@@ -23,6 +23,7 @@ public:
     void render(const Vec<double>& position, const Sprite& sprite) const;
     void render(const Entity& player) const;
     void render(const std::vector<std::pair<Sprite, int>>& backgrounds) const;
+    void render_life(int current, int max);
 
 private:
     Graphics& graphics;

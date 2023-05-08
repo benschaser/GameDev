@@ -19,6 +19,11 @@ Player::Player(Engine& engine, const Vec<double>& position, const Vec<int>& size
 
         sprite = standing.get_sprite();
 
+        projectile.sprite = engine.graphics.get_sprite("arrow");
+        projectile.combat.invincible = true;
+        projectile.combat.attack_damage = 1;
+        projectile.physics.acceleration.y = gravity;
+
         state = std::make_unique<Standing>();
         state->enter(*this, engine);
     }
