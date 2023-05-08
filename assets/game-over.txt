@@ -1,0 +1,5 @@
+load-sounds sounds.txt
+
+background background-over1.png 5 4
+background background-over2.png 5 2
+background background-over3.png 5 1

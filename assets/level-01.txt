@@ -1,0 +1,20 @@
+theme-spaceship.txt
+oooooooo[p                                       i]oooooooo
+oooooooo[p                                       i]oooooooo
+oooooooo[p                                       i]oooooooo
+oooooooo[p                                       i]oooooooo
+oooooooo[p                                       i]oooooooo
+oooooooo[p       D                               i]oooooooo
+oooooooo[p     zxxxc                             i]oooooooo
+oooooooo[p                                  =    i]oooooooo
+oooooooo[p                   A $            |    i]oooooooo
+oooooooo[p               vbbbbbbbn          |    i]oooooooo
+oooooooo[p               iooooooop          |    i]oooooooo
+oooooooo[p P             iooooooop D        |M   i]oooooooo
+qwwwwwwwwwwwwwwweuuuuasssssssssssssssduuuuqwwwwwwwwwwwwwwwe
+rtttttttttttttttyooooooooooooooooooooooooorttttttttttttttty
+rtttttttttttttttyooooooooooooooooooooooooorttttttttttttttty
+rttttttttttttttttwwwwwwwwwwwwwwwwwwwwwwwwwtttttttttttttttty
+rttttttttttttttttttttttttttttttttttttttttttttttttttttttttty
+rttttttttttttttttttttttttttttttttttttttttttttttttttttttttty
+rttttttttttttttttttttttttttttttttttttttttttttttttttttttttty

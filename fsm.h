@@ -4,76 +4,76 @@
 #include <memory>
 
 class Player;
-class World;
+class Engine;
 
 class State {
 public:
     virtual ~State() {}
     virtual std::unique_ptr<State> handle_input(Player& player, const SDL_Event& event) = 0;
-    virtual std::unique_ptr<State> update(Player& player, World& world, double dt);
-    virtual void enter(Player&) {}
-    virtual void exit(Player&) {}
+    virtual std::unique_ptr<State> update(Player& player, Engine& engine, double dt);
+    virtual void enter(Player&, Engine&) {}
+    virtual void exit(Player&, Engine&) {}
 };
 
 class Standing : public State {
 public:
     virtual std::unique_ptr<State> handle_input(Player& player, const SDL_Event& event) override;
-    virtual std::unique_ptr<State> update(Player& player, World& world, double dt) override;
-    virtual void enter(Player& player) override;
+    virtual std::unique_ptr<State> update(Player& player, Engine& engine, double dt) override;
+    virtual void enter(Player& player, Engine& engine) override;
     // virtual void exit(Player&) {}
 };
 
 class Walking : public State {
 public:
     virtual std::unique_ptr<State> handle_input(Player& player, const SDL_Event& event) override;
-    virtual std::unique_ptr<State> update(Player& player, World& world, double dt) override;
-    virtual void enter(Player& player) override;
-    // virtual void exit(Player&) {}
+    virtual std::unique_ptr<State> update(Player& player, Engine& engine, double dt) override;
+    virtual void enter(Player& player, Engine& engine) override;
+    virtual void exit(Player&, Engine& engine) override;
 };
-
-// class InAirWalking : public State {
-// public:
-//     virtual std::unique_ptr<State> handle_input(Player& player, const SDL_Event& event) override;
-//     virtual std::unique_ptr<State> update(Player& player, World& world, double dt) override;
-//     virtual void enter(Player& player) override;
-//     // virtual void exit(Player&) {}
-// };
-
-// class Falling : public State {
-// public:
-//     virtual std::unique_ptr<State> handle_input(Player& player, const SDL_Event& event) override;
-//     virtual std::unique_ptr<State> update(Player& player, World& world, double dt) override;
-//     virtual void enter(Player& player) override;
-//     // virtual void exit(Player&) {}
-// };
 
 class InAir : public State {
 public:
     virtual std::unique_ptr<State> handle_input(Player& player, const SDL_Event& event) override;
-    virtual std::unique_ptr<State> update(Player& player, World& world, double dt) override;
-    virtual void enter(Player& player) override;
+    virtual std::unique_ptr<State> update(Player& player, Engine& engine, double dt) override;
+    virtual void enter(Player& player, Engine& engine) override;
 };
 
 class Jumping : public State {
 public:
     virtual std::unique_ptr<State> handle_input(Player& player, const SDL_Event& event) override;
-    virtual std::unique_ptr<State> update(Player& player, World& world, double dt) override;
-    virtual void enter(Player& player) override;
-    // virtual void exit(Player&) {}
+    virtual std::unique_ptr<State> update(Player& player, Engine& engine, double dt) override;
+    virtual void enter(Player& player, Engine& engine) override;
 };
 
 class GroundPounding : public State {
 public:
     virtual std::unique_ptr<State> handle_input(Player& player, const SDL_Event& event) override;
-    virtual std::unique_ptr<State> update(Player& player, World& world, double dt) override;
-    virtual void enter(Player& player) override;
+    virtual std::unique_ptr<State> update(Player& player, Engine& engine, double dt) override;
+    virtual void enter(Player& player, Engine& engine) override;
     // virtual void exit(Player&) {}
 };
 
 class Diving : public State {
 public:
     virtual std::unique_ptr<State> handle_input(Player& player, const SDL_Event& event) override;
-    virtual std::unique_ptr<State> update(Player& player, World& world, double dt) override;
-    virtual void enter(Player& player) override;
+    virtual std::unique_ptr<State> update(Player& player, Engine& engine, double dt) override;
+    virtual void enter(Player& player, Engine& engine) override;
     // virtual void exit(Player&) {}
+};
+
+class AttackAll : public State {
+public:
+    virtual std::unique_ptr<State> handle_input(Player& player, const SDL_Event& event) override;
+    // virtual std::unique_ptr<State> update(Player& player, Engine& engine, double dt) override;
+    virtual void enter(Player& player, Engine& engine) override;
+};
+
+class Hurting : public State {
+    virtual std::unique_ptr<State> handle_input(Player& player, const SDL_Event& event) override;
+    virtual std::unique_ptr<State> update(Player& player, Engine& engine, double dt) override;
+    virtual void enter(Player& player, Engine& engine) override;
+    virtual void exit(Player& player, Engine& engine) override;
+
+    double cooldown = 2.0;
+    double elapsed_time = 0.0;
 };

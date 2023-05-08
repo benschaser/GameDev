@@ -1,23 +1,27 @@
 #pragma once
+#include <memory>
+#include <vector>
+#include <string>
+#include "projectile.h"
 
-class Player;
-class World;
+class Entity;
+class Engine;
 
 class Command {
 public:
     virtual ~Command() {}
-    virtual void execute(Player& player, World& world) = 0;
+    virtual void execute(Entity& player, Engine& engine) = 0;
 };
 
 class Stop : public Command {
 public:
-    void execute(Player& player, World& world) override;
+    void execute(Entity& player, Engine& engine) override;
 };
 
 class Accelerate : public Command {
 public:
     Accelerate(double acceleration);
-    void execute(Player& player, World& world) override;
+    void execute(Entity& player, Engine& engine) override;
 private:
     double acceleration;
 };
@@ -25,37 +29,53 @@ private:
 class Jump : public Command {
 public:
     Jump(double velocity);
-    void execute(Player& player, World& world) override;
+    void execute(Entity& player, Engine& engine) override;
 private:
     double velocity;
 };
 
-// class MoveInAir : public Command {
-// public:
-//     MoveInAir(double acceleration);
-//     void execute(Player& player, World& world) override;
-// private:
-//     double acceleration;
-// };
-
 class GroundPound : public Command {
 public:
     GroundPound();
-    void execute(Player& player, World& world) override;
+    void execute(Entity& player, Engine& engine) override;
 };
-
-// class MoveInAir : public Command {
-// public:
-//     MoveInAir(double acceleration);
-//     void execute(Player& player, World& world) override;
-// private:
-//     double acceleration;
-// };
 
 class Dive : public Command {
 public:
     Dive(double vx);
-    void execute(Player& player, World& world) override;
+    void execute(Entity& player, Engine& engine) override;
 private:
     double vx;
 };
+
+class Fire : public Command {
+public:
+    Fire(Projectile projectile, Vec<double> position, Vec<double> velocity);
+    void execute(Entity& player, Engine& engine) override;
+private:
+    Projectile projectile;
+};
+
+class EndGame : public Command {
+public:
+    void execute(Entity& player, Engine& engine) override;
+};
+
+class PlaySound : public Command {
+public:
+    PlaySound(std::string sound_name, bool is_background);
+    void execute(Entity& player, Engine& engine) override;
+private:
+    std::string sound_name;
+    bool is_background;
+};
+
+class LoadLevel : public Command {
+public:
+    LoadLevel(const std::string& fiilename);
+    void execute(Entity& player, Engine& engine) override;
+private:
+    std::string filename;
+};
+
+std::shared_ptr<Command> create_command(std::string command_name, std::vector<std::string> arguments);

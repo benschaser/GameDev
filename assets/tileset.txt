@@ -1,0 +1,12 @@
+Tileset.png
+grass_left 0 0 16 16 4
+grass_center 16 0 16 16 4
+grass_right 32 0 16 16 4
+
+dirt_left 0 16 16 16 4
+dirt_center 16 16 16 16 4
+dirt_right 32 16 16 16 4
+
+castle_left 80 64 16 16 4
+castle_center 96 64 16 16 4
+castle_right 112 64 16 16 4

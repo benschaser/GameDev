@@ -1,0 +1,38 @@
+tileset-1b.png
+floor-single 0 0 32 32 2
+floor-bottom-single 32 0 32 32 2
+floor-left 64 0 32 32 2
+floor-bottom-left 96 0 32 32 2
+floor-center 128 0 32 32 2 
+floor-bottom-center 0 32 32 32 2
+floor-right 32 32 32 32 2
+floor-bottom-right 64 32 32 32 2
+
+ground-center 96 32 32 32 2
+ground-bottom-center 128 32 32 32 2
+ground-left 0 64 32 32 2
+ground-bottom-left 32 64 32 32 2
+ground-right 64 64 32 32 2
+ground-bottom-right 96 64 32 32 2
+
+platform-unsupported-single 128 64 32 32 2
+platform-unsupported-left 0 96 32 32 2
+platform-unsupported-right 32 96 32 32 2
+platform-unsupported-center 64 96 32 32 2
+
+platform-supported-single 96 96 32 32 2
+platform-supported-left 128 96 32 32 2
+platform-supported-center 0 128 32 32 2
+platform-supported-right 32 128 32 32 2
+
+backwall-single 32 160 32 32 2
+backwall-left 64 128 32 32 2
+backwall-center 96 128 32 32 2
+backwall-right 128 128 32 32 2
+backwall-top 0 160 32 32 2
+
+backwall-start 96 128 32 32 2
+backwall-end 96 128 32 32 2
+
+
+

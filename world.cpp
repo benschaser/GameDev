@@ -1,16 +1,27 @@
 #include "world.h"
+#include "player.h"
 #include <cmath>
 
-World::World(int width, int height)
-    :tilemap{width, height}{}
+// World::World(int width, int height)
+//     :tilemap{width, height}{}
 
-void World::add_platform(int x, int y, int width, int height) {
-    for (int i = 0; i < height; ++i){
-        for (int j = 0; j < width;j++){
-            tilemap(x+j, y+i) = Tile::Platform;
-        }
+World::World(const Level& level)
+    :tilemap{level.width, level.height}, backgrounds{level.backgrounds}, quadtree{AABB{{level.width / 2.0, level.height / 2.0}, {level.width / 2.0, level.height / 2.0}}} {
+    
+    for (auto [position, tile] : level.tiles) {
+        tilemap(position.x, position.y) = tile;
+    }
+    for (auto [position, type] : level.enemies) {
+        enemies.push_back(std::make_shared<Enemy>(position, Vec<int>{1,1}, type));
     }
 }
+// void World::add_platform(int x, int y, int width, int height) {
+//     for (int i = 0; i < height; ++i){
+//         for (int j = 0; j < width;j++){
+//             tilemap(x+j, y+i) = Tile::Platform;
+//         }
+//     }
+// }
 void World::move_to(Vec<double>& position, const Vec<int>& size, Vec<double>& velocity) {
     // test sides first, if both collide then move backwards
     // bottom side
@@ -85,8 +96,44 @@ void World::move_to(Vec<double>& position, const Vec<int>& size, Vec<double>& ve
     }
 }
 
+// bool World::collides(const Vec<double>& position) const {
+//     int x = std::floor(position.x);
+//     int y = std::floor(position.y); 
+//     return tilemap(x,y) == Tile::Platform;
+// }
+
 bool World::collides(const Vec<double>& position) const {
     int x = std::floor(position.x);
-    int y = std::floor(position.y); 
-    return tilemap(x,y) == Tile::Platform;
+    int y = std::floor(position.y);
+    return tilemap(x, y).blocking;
+}
+
+std::shared_ptr<Command> World::touch_tiles(const Player& player) {
+    int x = std::floor(player.physics.position.x);
+    int y = std::floor(player.physics.position.y);
+    const Vec<int>& size = player.size;
+    const std::vector<Vec<int>> displacements{{0,0}, {size.x,0}, {0,size.y}, {size.x,size.y}};
+    for (const Vec<int>& displacement : displacements) {
+        Tile& tile = tilemap(x + displacement.x, y + displacement.y);
+        if (tile.command) {
+            auto command = tile.command;
+            tile.command = nullptr;
+            return command;
+        }
+    }
+    return nullptr;
+}
+
+void World::remove_inactive() {
+    enemies.erase(std::remove_if(enemies.begin(), enemies.end(), [](std::shared_ptr<Enemy>enemy){return !enemy->combat.is_alive;}), enemies.end());
+    projectiles.erase(std::remove_if(std::begin(projectiles), std::end(projectiles), [](const Projectile& projectile){return !projectile.combat.is_alive;}), std::end(projectiles));
+
+}
+
+void World::build_quadtree() {
+    quadtree.clear();
+
+    for (std::shared_ptr<Enemy> enemy : enemies) {
+        quadtree.insert(enemy.get());
+    }
 }
