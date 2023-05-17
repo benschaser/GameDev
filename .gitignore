@@ -2,3 +2,4 @@ build/*
 .vscode
 *.o
 .DS_Store
+assets/*

@@ -1,3 +1,0 @@
-game_won.png
-
-game_won 0 0 1080 1080 1

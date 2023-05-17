@@ -1,3 +1,0 @@
-game_over.png
-
-game_lost 0 0 1080 1080 1

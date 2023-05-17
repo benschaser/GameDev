@@ -1,3 +1,0 @@
-load-sounds sounds.txt
-
-background space.png 2 4

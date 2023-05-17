@@ -1,3 +1,0 @@
-black_hole.png
-
-black_hole 0 0 480 480 2 256
