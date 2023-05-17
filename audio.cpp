@@ -10,7 +10,7 @@ Audio::Audio() {
     }
 
     // init mixer
-    result = Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024);
+    result = Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 4, 1024);
     if (result < 0) {
         throw std::runtime_error(SDL_GetError());
     }
@@ -64,6 +64,14 @@ Audio::~Audio() {
             throw std::runtime_error("cannot lower volume");
         }
         result = Mix_PlayChannel(0, sound->second, -1);
+    }
+    else if (sound_name == "enemy_death") {
+        result = Mix_Volume(3, 64);
+        result = Mix_PlayChannel(3, sound->second, 0);
+    }
+    else if (sound_name == "laser_enemy_impact" || sound_name == "laser_wall_impact" || sound_name == "powerup" || sound_name == "player_death") {
+        result = Mix_Volume(4, 64);
+        result = Mix_PlayChannel(4, sound->second, 0);
     }
     else if (loop) {
         result = Mix_Volume(1, 64);

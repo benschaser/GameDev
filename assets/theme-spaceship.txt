@@ -3,6 +3,9 @@ load-spritesheet decors-1.txt
 load-spritesheet characters.txt
 load-spritesheet enemies.txt
 load-spritesheet objects.txt
+load-spritesheet space.txt
+load-spritesheet game_won.txt
+load-spritesheet game_lost.txt
 
 load-sounds sounds.txt
 
@@ -45,7 +48,20 @@ tile [ backwall-start true
 tile ] backwall-end true
 
 tile D dish false
-tile A antenna false load_level level-01.txt
+tile A antenna false
+tile { portal_left false
+tile } portal_right false
+tile > portal_yellow false
+tile ! none false load_level level-01.txt
+tile @ none false load_level level-02.txt
+tile # none false load_level level-03.txt
+tile $ none false load_level level-04.txt
+tile % none false load_level level-05.txt
+tile & none false load_level level-06.txt
+tile * none false win_game
 
-enemy M monster
-enemy $ troll
+tile ^ powerup false powerup
+
+enemy S sentry
+enemy R ranger
+enemy W warden

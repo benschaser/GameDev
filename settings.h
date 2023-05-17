@@ -12,8 +12,6 @@ public:
     std::string title;
     int screen_width, screen_height, tilesize;
 
-    // std::string characters;
-    // std::string sounds;
     std::string starting_level;
 private:
     void load();

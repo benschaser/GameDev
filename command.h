@@ -5,6 +5,7 @@
 #include "projectile.h"
 
 class Entity;
+class Player;
 class Engine;
 
 class Command {
@@ -48,9 +49,16 @@ private:
     double vx;
 };
 
+class EnemyHurt : public Command {
+public:
+    EnemyHurt();
+    void execute(Entity& player, Engine& engine) override;
+};
+
 class Fire : public Command {
 public:
-    Fire(Projectile projectile, Vec<double> position, Vec<double> velocity);
+    // Fire(Projectile projectile, Vec<double> position, Vec<double> velocity);
+    Fire(const Player& player);
     void execute(Entity& player, Engine& engine) override;
 private:
     Projectile projectile;
@@ -72,10 +80,20 @@ private:
 
 class LoadLevel : public Command {
 public:
-    LoadLevel(const std::string& fiilename);
+    LoadLevel(const std::string& filename);
     void execute(Entity& player, Engine& engine) override;
 private:
     std::string filename;
+};
+
+class Powerup : public Command {
+public:
+    void execute(Entity& player, Engine& engine) override;
+};
+
+class WinGame : public Command {
+public:
+    void execute(Entity& player, Engine& engine) override;
 };
 
 std::shared_ptr<Command> create_command(std::string command_name, std::vector<std::string> arguments);

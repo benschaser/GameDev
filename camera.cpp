@@ -4,10 +4,10 @@
 #include "tilemap.h"
 #include "vec.h"
 #include "player.h"
+#include "enemy.h"
 #include <iostream>
 
 constexpr double v_factor = 2.5;
-constexpr int lower_bound = 5; // I know this is dependent on window size but I'm not sure how to accomplish this cutoff without the world as an update parameter
 
 Camera::Camera(Graphics& graphics, int tilesize)
     :graphics{graphics}, tilesize{tilesize} {
@@ -69,9 +69,10 @@ void Camera::render(const Tilemap& tilemap, bool grid_on) const {
     // draw tiles
     for (int y = ymin; y <= ymax; ++y) {
         for (int x = xmin; x <= xmax; ++x) {
+            // tilemap(x, y).sprite.update(dt);
             const Tile& tile = tilemap(x, y);
             Vec<double> position{static_cast<double>(x), static_cast<double>(y)};
-            render(position, tile.sprite);
+            render(position, tile.sprite.get_sprite());
             if (grid_on) {
                 render(position, Color{0, 0, 0, 255}, false);
             }
@@ -85,16 +86,23 @@ void Camera::render(const Vec<double>& position, const Sprite& sprite) const {
     graphics.draw_sprite(pixel, sprite);
 }
 
+void Camera::render_screen(const Vec<int>& position, const Sprite& sprite) const {
+    graphics.draw_sprite(position, sprite);
+}
+
 void Camera::render(const Entity& player) const {
-    // render(player.physics.position, player.color);
     render(player.physics.position, player.sprite);
 }
 
 void Camera::render(const std::vector<std::pair<Sprite, int>>& backgrounds) const {
     for (auto [sprite, distance] : backgrounds) {
-        int shift = static_cast<int>(location.x / distance);
+        int shift = static_cast<int>(location.x / (distance*0.5));
         graphics.draw_sprite({-shift, 0}, sprite);
     }
+}
+
+void Camera::update_tiles(Tilemap& tilemap, double dt) {
+    tilemap.update(dt);
 }
 
 void Camera::calculate_visible_tiles() {
@@ -102,7 +110,6 @@ void Camera::calculate_visible_tiles() {
     Vec<int> num_tiles = Vec{graphics.width, graphics.height};
     num_tiles /= (2 * tilesize);
     num_tiles += Vec{1, 1};
-    // (Vec{graphics.width, graphics.height} / (2 * tilesize)) + Vec{1, 1};
 
     Vec<int> center{static_cast<int>(location.x), static_cast<int>(location.y)};
     visible_max = center + num_tiles;
@@ -110,17 +117,22 @@ void Camera::calculate_visible_tiles() {
 }
 
 void Camera::render_life(int current, int max) {
-    Sprite heart = graphics.get_sprite("heart");
-    Sprite empty_heart = graphics.get_sprite("empty_heart");
+    SDL_Rect outline{32, 32, 480, 32};
+    double health = (static_cast<double>(current) / static_cast<double>(max)) * 480;
+    SDL_Rect fill{32, 32, static_cast<int>(health), 32};
+    Color color{255, 50, 50, 255};
+    graphics.draw(outline, color, false);
+    graphics.draw(fill, color, true);
 
-    for (int i = 0; i < current; ++i) {
-        Vec<int> position{35, 65};
-        position.x += i * 64 + 10;
-        graphics.draw_sprite(position, heart);
-    }
-    for (int i = current; i < max; ++i) {
-        Vec<int> position{35, 65};
-        position.x += i * 64 + 10;
-        graphics.draw_sprite(position, empty_heart);
-    }
+}
+void Camera::render_enemy_health(const Enemy& enemy) {
+    Vec<double> world_pos{enemy.physics.position.x - 0.5, enemy.physics.position.y + 2.3};
+    Vec<int> screen_pos = world_to_screen(world_pos);
+    SDL_Rect outline{screen_pos.x, screen_pos.y, 64, 8};
+    double health = (static_cast<double>(enemy.combat.health) / static_cast<double>(enemy.combat.max_health)) * 64;
+    SDL_Rect fill{screen_pos.x, screen_pos.y,  static_cast<int>(health), 8};
+    Color color{255, 50, 50, 255};
+    graphics.draw(outline, color, false);
+    graphics.draw(fill, color, true);
+
 }

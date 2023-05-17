@@ -1,23 +1,20 @@
-theme-basic.txt
-ttttttttttttttttttttttttttttttttt
-r                               r
-r                               r
-r                               r
-r                               r
-r                               r
-r                               r
-r                               r
-r                               r
-r                               r
-r                               r
-r                               r
-r                 x             r
-r              qwwwwwe          r
-r              asssssd          r
-r  P    M  B   asssssd  l T     r
-qwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwe
-asssssssssssssssssssssssssssssssd
-asssssssssssssssssssssssssssssssd
-asssssssssssssssssssssssssssssssd
-asssssssssssssssssssssssssssssssd
-
+theme-spaceship.txt
+oooooooo[p                                                                                         i]oooooooo
+oooooooo[p                                                                                         i]oooooooo
+oooooooo[p                                                                                         i]oooooooo
+oooooooo[p                                                                                         i]oooooooo
+oooooooo[p                                                                        S ^              i]oooooooo
+oooooooo[p       D                                                              vbbbbbn            i]oooooooo
+oooooooo[p     zxxxc                                                            iooooop            i]oooooooo
+oooooooo[p                                  =                                   iooooop  R         i]oooooooo
+oooooooo[p                 S A              |           =                   vbbbbbbbbbbbbbbn       i]oooooooo
+oooooooo[p               vbbbbbbbn          |           |           zxxc    ioooooooooooooop       i]oooooooo
+oooooooo[p               iooooooop          |           |                   ioooooooooooooop       i]oooooooo
+oooooooo[p P             iooooooop        R |     W     |  ^       R       Wioooooooooooooop S   }!i]oooooooo
+qwwwwwwwwwwwwwwweuuuuasssssssssssssssduuuuqwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwe
+rtttttttttttttttyooooooooooooooooooooooooorttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttty
+rtttttttttttttttyooooooooooooooooooooooooorttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttty
+rttttttttttttttttwwwwwwwwwwwwwwwwwwwwwwwwwtttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttty
+rttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttty
+rttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttty
+rttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttty

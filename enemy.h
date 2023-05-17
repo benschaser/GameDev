@@ -16,4 +16,5 @@ public:
     Vec<double> last_edge_position;
     Vec<int> size;
     EnemyType type;
+    bool temp{true};
 };

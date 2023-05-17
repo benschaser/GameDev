@@ -1,7 +1,23 @@
-ex-spritesheet.png
-none 0 0 16 16 4
-treasure_chest 336 304 16 16 4
-hole 96 144 16 16 4 
-arrow 308 189 7 21 4
-heart 288 256 16 16 4
-empty_heart 320 256 16 16 4
+objects.png
+
+none 0 0 32 32 2
+
+laser_g 64 0 64 32 2 4
+laser_g_wall_impact 0 32 64 32 2 4
+laser_g_enemy_impact 0 64 64 32 2 4
+
+laser_o 0 96 64 32 2 4
+laser_o_wall_impact 0 128 64 32 2 4
+laser_o_enemy_impact 0 160 64 32 2 4
+
+laser_p 0 192 64 32 2 4
+laser_p_wall_impact 0 224 64 32 2 4
+laser_p_enemy_impact 0 256 64 32 2 4
+
+heart 320 0 16 16 4
+empty_heart 352 0 16 16 4
+portal_left 384 0 64 64 3 8
+portal_right 384 64 64 64 3 8
+portal_yellow 384 128 64 64 3 8
+
+powerup 256 64 32 32 2 4

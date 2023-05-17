@@ -2,16 +2,14 @@
 #include "enemy.h"
 
 EnemyType create_enemytype(Graphics& graphics, std::string type_name) {
-    // EnemyType type;
-    // physics.acceleration = type.acceleration;
-    // type.animation = graphics.get_animated_sprite(type_name + "_running", 0.1, true, false);
-    // type.behavior = default_behavior;
-    // return type;
-    if (type_name == "troll") {
-        return create_troll(graphics);
+    if (type_name == "sentry") {
+        return create_sentry(graphics);
     }
-    else if (type_name == "monster") {
-        return create_monster(graphics);
+    else if (type_name == "ranger") {
+        return create_ranger(graphics);
+    }
+    else if (type_name == "warden") {
+        return create_warden(graphics);
     }
     else {
         throw std::runtime_error("Unknown typename: " + type_name);
@@ -32,18 +30,32 @@ std::unique_ptr<Command> standing_behavior(Engine&, Enemy&) {
 }
 
 
-std::unique_ptr<Command> hurting_behavior(Engine&, Enemy& enemy) {
-    return std::make_unique<Stop>();
+std::unique_ptr<Command> hurting_behavior(Engine& engine, Enemy& enemy) {
+    return default_behavior(engine, enemy);
 }
 
-EnemyType create_troll(Graphics& graphics) {
-    Vec<double> acceleration {-30, 0};
-    AnimatedSprite sprite = graphics.get_animated_sprite("troll_running", 0.15, true, false);
-    return EnemyType{sprite, acceleration, 8, 2, 2, 0, default_behavior, 2};
-}
-
-EnemyType create_monster(Graphics& graphics) {
+EnemyType create_sentry(Graphics& graphics) {
     Vec<double> acceleration {0, 0};
-    AnimatedSprite sprite = graphics.get_animated_sprite("monster_standing", 0.15, true, false);
-    return EnemyType{sprite, acceleration, 6, 3, 3, 0, default_behavior, 6};
+    AnimatedSprite sprite = graphics.get_animated_sprite("sentry_standing", 0.1, true, false);
+    AnimatedSprite death = graphics.get_animated_sprite("sentry_death", 0.1, false, false);
+    sprite.flip(true);
+    death.flip(true);
+    death.loop = false;
+    return EnemyType{sprite, death, acceleration, 24, 4, 0.01, 0, default_behavior, 6};
+}
+
+EnemyType create_ranger(Graphics& graphics) {
+    Vec<double> acceleration {-16, 0};
+    AnimatedSprite sprite = graphics.get_animated_sprite("ranger_walking", 0.1, true, false);
+    AnimatedSprite death = graphics.get_animated_sprite("ranger_death", 0.1, false, false);
+    death.loop = false;
+    return EnemyType{sprite, death, acceleration, 8, 2, 0.01, 0, default_behavior, 5};
+}
+
+EnemyType create_warden(Graphics& graphics) {
+    Vec<double> acceleration {-8, 0};
+    AnimatedSprite sprite = graphics.get_animated_sprite("warden_walking", 0.1, true, false);
+    AnimatedSprite death = graphics.get_animated_sprite("warden_death", 0.1, false, false);
+    death.loop = false;
+    return EnemyType{sprite, death, acceleration, 30, 6, 0.01, 0, default_behavior, 3};
 }

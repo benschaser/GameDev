@@ -56,11 +56,6 @@ bool QuadTree::insert(Entity* object) {
 void QuadTree::subdivide() {
     Vec<double> half = boundary.half_dimension / 2.0;
 
-    // nw = std::make_shared<QuadTree>(AABB{{boundary.center.x - half.x, boundary.center.y + half.y}, half});
-    // ne = std::make_shared<QuadTree>(AABB{{boundary.center.x + half.x, boundary.center.y + half.y}, half});
-    // sw = std::make_shared<QuadTree>(AABB{{boundary.center.x - half.x, boundary.center.y - half.y}, half});
-    // nw = std::make_shared<QuadTree>(AABB{{boundary.center.x + half.x, boundary.center.y - half.y}, half});
-
     nw = std::make_shared<QuadTree>(AABB{{boundary.center.x - half.x, boundary.center.y + half.y}, half});
     ne = std::make_shared<QuadTree>(AABB{{boundary.center.x + half.x, boundary.center.y + half.y}, half});
     sw = std::make_shared<QuadTree>(AABB{{boundary.center.x - half.x, boundary.center.y - half.y}, half});

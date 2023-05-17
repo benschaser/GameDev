@@ -12,10 +12,12 @@ public:
     void reset();                  // set current_frame and time to zero
     Sprite get_sprite() const;
     int number_of_frames() const;
+    void rotate(int degrees);
+    bool loop = true;
         
 private:
     std::vector<Sprite> sprites;
     double dt_per_frame{0}, time{0};
-    int current_frame{0};
+    int current_frame{0}, total_frames{1};
 };
     

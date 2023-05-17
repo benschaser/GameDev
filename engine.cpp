@@ -7,39 +7,12 @@
 #include <chrono>
 #include <iostream>
 
-// Engine::Engine(const Settings& settings)
-//     :graphics{settings.title, settings.screen_width, settings.screen_height},
-//     camera{graphics, settings.tilesize},
-//     world{31, 11} {
-//         graphics.load_spritesheet(settings.characters);
-//         audio.load_sounds(settings.sounds);
-//         audio.play_sound("background", true);
-//         load_level();
-//     }
-
 Engine::Engine(const Settings& settings)
     : graphics{settings.title, settings.screen_width, settings.screen_height},
       camera{graphics, settings.tilesize} {
     
     load_level(settings.starting_level);
 }
-
-// void Engine::load_level() {
-//     // bounds
-//     world.add_platform(0, 0, 30, 1);
-//     world.add_platform(0, 0, 1, 10);
-//     world.add_platform(30, 0, 1, 10);
-//     world.add_platform(0, 10, 31, 1);
-
-//     // platforms
-//     world.add_platform(3, 7, 4, 1);
-//     world.add_platform(12, 3, 6, 1);
-
-//     // add player
-//     player = std::make_shared<Player>(*this, Vec<double>{10, 4}, Vec<int>{1, 1});
-//     // move camera
-//     camera.move_to(player->physics.position);
-// }
 
 void Engine::load_level(const std::string& level_filename) {
     Level level{level_filename, graphics, audio};
@@ -59,6 +32,7 @@ void Engine::input() {
         // handle windows and systems events first
         if (event.type == SDL_QUIT) {
             running = false;
+            window_open = false;
             break;
         }
         if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_g) {
@@ -69,6 +43,7 @@ void Engine::input() {
         auto command = player->handle_input(event, *this);
         if (command) {
             command->execute(*player, *this);
+            // if (command)
         }
     }
     for (auto enemy : world->enemies) {
@@ -80,15 +55,14 @@ void Engine::input() {
 }
 
 void Engine::update(double dt) {
+    if (win) {
+        running = false;
+    }
     player->update(*this, dt);
     camera.move_to(player->get_sprite().first);
     camera.update(dt);
+    camera.update_tiles(world->tilemap, dt);
 
-
-    // for (auto enemy : world->enemies) {
-    //     if (!enemy.combat.is_alive) {
-    //     }
-    // }
     for (auto enemy : world->enemies) {
         auto command = enemy->update(*this, dt);
         if (command) {
@@ -97,6 +71,11 @@ void Engine::update(double dt) {
     }
     for (auto& projectile : world->projectiles) {
         projectile.update(*this, dt);
+        Vec<double> pos = projectile.physics.position;
+        if (pos.x <= 2 || pos.y <= 2 || pos.x >= graphics.level_width - 2 || pos.y >= graphics.level_height - 2) {
+            // remove projectile
+            projectile.combat.is_alive = false;
+        }
     }
 
     // handle collisions between player and enemy
@@ -105,44 +84,63 @@ void Engine::update(double dt) {
     std::vector<Entity*> enemies = world->quadtree.query_range(player_box);
     if (enemies.size() > 0) {
         auto enemy = enemies.front();
-        enemy->combat.attack(*player);
-        // enter hurting state
-        // std::cout << player->combat.health << '\n';
-        player->state->exit(*player, *this);
-        player->state = std::make_unique<Hurting>();
-        player->state->enter(*player, *this);
+        if (enemy->combat.is_alive && !player->grounded && player->combat.is_alive) {
+            enemy->combat.attack(*player);
+            // enter hurting state
+            player->state->exit(*player, *this);
+            player->state = std::make_unique<Hurting>();
+            player->state->enter(*player, *this);
+        }
+        else if (enemy->combat.is_alive && player->combat.is_alive) {
+            player->combat.attack(*enemy);
+            player->physics.velocity = {2, 2};
+        }
+        
     }
 
     for (auto & projectile : world->projectiles) {
         AABB p_box{projectile.physics.position, {1.0*projectile.size.x, 1.0*projectile.size.y}};
         std::vector<Entity*> entities = world->quadtree.query_range(p_box);
+        entities.erase(std::remove_if(entities.begin(), entities.end(), [](Entity* entity){return !entity->combat.is_alive;}), entities.end());
         for (auto entity : entities) {
-            projectile.combat.attack(*entity);
+            if (entity->combat.is_alive) {
+                projectile.combat.attack(*entity);
+            }
+            
+            if (entity->physics.velocity.y == 0) {
+                entity->physics.velocity.y = 2;
+            }
+            if (projectile.sprite.flip == false) {
+                entity->physics.velocity.x = 2;
+            }
+            else {
+                entity->physics.velocity.x = -2;
+            }
         }
-    }
-
-    if (!player->combat.is_alive) {
-        EndGame endgame;
-        endgame.execute(*player, *this);
-        return;
+        
+        if (entities.size() > 0) {
+            projectile.hit_enemy = true;
+        }
     }
 
     // check for deaths
     world->remove_inactive();
-    // world->enemies.erase(std::remove_if(world->enemies.begin(),world->enemies.end(), [](std::shared_ptr<Enemy>enemy){return !enemy->combat.is_alive;}), world->enemies.end());
 }
 
-void Engine::render() {
+void Engine::render(double dt) {
     graphics.clear();
     camera.render(world->backgrounds);
     camera.render(world->tilemap, grid_on);
-    auto [position, color] = player->get_sprite();
-    // camera.render(position, color);
-    camera.render(position, player->sprite);
-    camera.render(*player);
+    
     for (auto enemy : world->enemies) {
         camera.render(*enemy);
+        if (enemy->combat.is_alive) {
+            camera.render_enemy_health(*enemy);
+        }
     }
+    auto [position, color] = player->get_sprite();
+    camera.render(position, player->sprite);
+    camera.render(*player);
     for (auto& projectile : world->projectiles) {
         camera.render(projectile);
     }
@@ -152,6 +150,7 @@ void Engine::render() {
 
 void Engine::run() {
     running = true;
+    window_open = true;
     audio.play_sound("background", true);
     auto previous = std::chrono::high_resolution_clock::now();
     double lag{0.0};
@@ -159,6 +158,7 @@ void Engine::run() {
         if (next_level) {
             load_level(next_level.value());
             audio.play_sound("background", true);
+            audio.play_sound("teleport");
             next_level.reset();
         }
         auto current = std::chrono::high_resolution_clock::now();
@@ -173,21 +173,40 @@ void Engine::run() {
             update(dt);
             lag -= dt;
         }
-        render();
+        
+        render(dt);
+        
     }
-    setup_end_screen();
-
-    while (running) {
-        SDL_Event event;
-        while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT) {  // closing the window
-                running = false;
-                break;
-            }
+    
+    if (window_open) {
+        audio.stop_background();
+        audio.stop_sound();
+        Sprite bkg = graphics.get_sprite("space");
+        Sprite words1 = graphics.get_sprite("game_won");
+        Sprite words2 = graphics.get_sprite("game_lost");
+        if (win) {
+            audio.play_sound("game_won");
         }
-        graphics.clear();
-        camera.render(world->backgrounds);
-        graphics.update();
+        else {
+            audio.play_sound("game_over");
+        }
+        while (window_open) {
+            SDL_Event event;
+            while (SDL_PollEvent(&event)) {
+                if (event.type == SDL_QUIT) {  // closing the window
+                    window_open = false;
+                    break;
+                }
+            }
+            camera.render_screen({640, 720}, bkg);
+            if (win) {
+                camera.render_screen({640, 840}, words1);
+            }
+            else {
+                camera.render_screen({640, 840}, words2);
+            }
+            graphics.update();
+        }
     }
 }
 

@@ -26,12 +26,16 @@ public:
     Audio audio;
     std::shared_ptr<Player> player;
     std::optional<std::string> next_level;
+    bool win{false};
 private:
     bool running{true};
+    bool window_open{true};
     bool grid_on{false};
+    bool game_over{false};
+    
 
     void input();
     void update(double dt);
-    void render();
+    void render(double dt);
     void setup_end_screen();
 };

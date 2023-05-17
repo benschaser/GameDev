@@ -1,20 +1,26 @@
 theme-spaceship.txt
-oooooooo[p                                       i]oooooooo
-oooooooo[p                                       i]oooooooo
-oooooooo[p                                       i]oooooooo
-oooooooo[p                                       i]oooooooo
-oooooooo[p                                       i]oooooooo
-oooooooo[p       D                               i]oooooooo
-oooooooo[p     zxxxc                             i]oooooooo
-oooooooo[p                                  =    i]oooooooo
-oooooooo[p                   A $            |    i]oooooooo
-oooooooo[p               vbbbbbbbn          |    i]oooooooo
-oooooooo[p               iooooooop          |    i]oooooooo
-oooooooo[p P             iooooooop D        |M   i]oooooooo
-qwwwwwwwwwwwwwwweuuuuasssssssssssssssduuuuqwwwwwwwwwwwwwwwe
-rtttttttttttttttyooooooooooooooooooooooooorttttttttttttttty
-rtttttttttttttttyooooooooooooooooooooooooorttttttttttttttty
-rttttttttttttttttwwwwwwwwwwwwwwwwwwwwwwwwwtttttttttttttttty
-rttttttttttttttttttttttttttttttttttttttttttttttttttttttttty
-rttttttttttttttttttttttttttttttttttttttttttttttttttttttttty
-rttttttttttttttttttttttttttttttttttttttttttttttttttttttttty
+oooooooo[p                                                                                         i]oooooooo
+oooooooo[p                                                                                         i]oooooooo
+oooooooo[p                                                                                         i]oooooooo
+oooooooo[p                                                                                         i]oooooooo
+oooooooo[p                                                                                         i]oooooooo
+oooooooo[p                                                                                         i]oooooooo
+oooooooo[p                                                                                         i]oooooooo
+oooooooo[p                                                                                         i]oooooooo
+oooooooo[p                        S^  A                                                            i]oooooooo
+oooooooo[p      D              vbbbbbbbn                                                           i]oooooooo
+oooooooo[p     zxxxc           iooooooop                                                           i]oooooooo
+oooooooo[p                     iooooooop                                                           i]oooooooo
+oooooooo[p                     iooooooop                       S             vbn         A         i]oooooooo
+oooooooo[p               zc    iooooooop                     zxxc            iop        zxc        i]oooooooo
+oooooooo[p                     iooooooop            A                       Riop R                 i]oooooooo
+oooooooo[p        vn           iooooooop           zxxc                   vbbbbbbbn                i]oooooooo
+oooooooo[p        ip           iooooooop                                  iooooooop                i]oooooooo
+oooooooo[p {P     ip S         iooooooop  R        W    R        R  ^  W  iooooooop     W  S     }@i]oooooooo
+qwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwweoooooassssssssssssssssssduuuuuqwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwe
+rtttttttttttttttttttttttttttttttyoooooooooooooooooooooooooooooortttttttttttttttttttttttttttttttttttttttttttty
+rtttttttttttttttttttttttttttttttyoooooooooooooooooooooooooooooqttttttttttttttttttttttttttttttttttttttttttttty
+rtttttttttttttttttttttttttttttttyooooooooooooooooooooooooooooorttttttttttttttttttttttttttttttttttttttttttttty
+rttttttttttttttttttttttttttttttttwwwwwwwwwwwwwwwwwwwwwwwwwwwwwtttttttttttttttttttttttttttttttttttttttttttttty
+rttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttty
+rttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttty

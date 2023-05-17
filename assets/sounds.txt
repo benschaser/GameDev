@@ -1,5 +1,16 @@
 jumping jumping-sound.mp3
 landing landing-sound.mp3
 running running-sound.mp3
+grounding grounding-sound.mp3
+firing laser-gun.mp3
+impact impact.mp3
+hurt oof_sound.mp3
+powerup powerup-sound.mp3
+laser_enemy_impact laser_enemy_impact2.mp3
+enemy_death enemy-death.mp3
+player_death player-death.mp3
+game_over gameover-sound.mp3
+game_won game_won.mp3
+teleport teleport-sound.mp3
 background Psykick.mp3
 empty empty.mp3

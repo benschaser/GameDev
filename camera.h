@@ -9,6 +9,7 @@ class Graphics;
 class Tilemap;
 class Sprite;
 class Player;
+class Enemy;
 
 class Camera {
 public:
@@ -21,9 +22,12 @@ public:
     void render(const Vec<double>& position, const Color& color, bool filled = true) const;
     void render(const Tilemap& tilemap, bool grid_on = false) const;
     void render(const Vec<double>& position, const Sprite& sprite) const;
+    void render_screen(const Vec<int>& position, const Sprite& sprite) const;
     void render(const Entity& player) const;
     void render(const std::vector<std::pair<Sprite, int>>& backgrounds) const;
+    void update_tiles(Tilemap& tilemap, double dt);
     void render_life(int current, int max);
+    void render_enemy_health(const Enemy& enemy);
 
 private:
     Graphics& graphics;

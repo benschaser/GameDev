@@ -9,4 +9,6 @@ public:
     Physics physics;
     Sprite sprite;
     Combat combat;
+    int gun_level{0};
+    bool carrying{false};
 };

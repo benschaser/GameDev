@@ -13,4 +13,5 @@ class Physics {
 public:
     void update(double dt);
     Vec<double> position, velocity, acceleration{0, gravity};
+    bool clamp_velocity = true;
 };

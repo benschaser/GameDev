@@ -2,6 +2,7 @@
 
 #include <sstream>
 #include <stdexcept>
+#include <iostream>
 
 Tilemap::Tilemap(int width, int height)
     : width{width}, height{height}, tiles(width * height) {
@@ -11,7 +12,11 @@ Tilemap::Tilemap(int width, int height)
     if (height < 1) {
         throw std::runtime_error("height must be positive");
     }
-    // std::fill(std::begin(tiles), std::end(tiles), Tile::Open);
+}
+
+Tile& Tilemap::operator()(int x, int y) {
+    check_bounds(x, y);
+    return tiles.at(x + y * width);
 }
 
 const Tile& Tilemap::operator()(int x, int y) const {
@@ -19,9 +24,10 @@ const Tile& Tilemap::operator()(int x, int y) const {
     return tiles.at(x + y * width);
 }
 
-Tile& Tilemap::operator()(int x, int y) {
-    check_bounds(x, y);
-    return tiles.at(x + y * width);
+void Tilemap::update(double dt) {
+    for (Tile& tile : tiles) {
+        tile.sprite.update(dt);
+    }
 }
 
 void Tilemap::check_bounds(int x, int y) const {

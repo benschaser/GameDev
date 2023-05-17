@@ -5,7 +5,7 @@
 
 class Tile {
 public:
-    Sprite sprite;
+    AnimatedSprite sprite;
     bool blocking{false};
     std::shared_ptr<Command> command{nullptr};
 };
@@ -13,8 +13,10 @@ public:
 class Tilemap {
 public:
     Tilemap(int width, int height);
-    const Tile& operator()(int x, int y) const;
     Tile& operator()(int x, int y);
+    const Tile& operator()(int x, int y) const;
+    void update(double dt);
+   
 
 
     const int width;

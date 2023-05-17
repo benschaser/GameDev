@@ -12,6 +12,7 @@ class Engine;
 class EnemyType {
 public:
     AnimatedSprite animation;
+    AnimatedSprite death;
     Vec<double> acceleration;
     int health, damage;
     double cooldown, elapsed_time;
@@ -27,6 +28,6 @@ std::unique_ptr<Command> default_behavior(Engine&, Enemy& enemy);
 std::unique_ptr<Command> standing_behavior(Engine&, Enemy& enemy);
 std::unique_ptr<Command> hurting_behavior(Engine&, Enemy& enemy);
 
-
-EnemyType create_troll(Graphics& graphics);
-EnemyType create_monster(Graphics& graphics);
+EnemyType create_sentry(Graphics& graphics);
+EnemyType create_ranger(Graphics& graphics);
+EnemyType create_warden(Graphics& graphics);

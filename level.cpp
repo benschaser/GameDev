@@ -76,44 +76,6 @@ void Level::load(Graphics& graphics, Audio& audio) {
     }
 }
 
-// void Level::load_theme(const std::string& filename, Graphics& graphics, Audio& audio) {
-//     std::ifstream input{"assets/" + filename};
-//     // error if can't open
-
-//     std::string command;
-//     for (int line = 0; input >> command; ++line) {
-//         if (command == "load-spritesheet") {
-//             std::string spritesheet_filename;
-//             input >> spritesheet_filename; // if can't = error
-//             graphics.load_spritesheet("assets/" + spritesheet_filename);
-//         }
-//         else if (command == "load-sounds") {
-//             std::string audio_filename;
-//             input >> audio_filename; // error if can't
-//             audio.load_sounds("assets/" + audio_filename);
-//         }
-//         else if (command == "background") {
-//             std::string img_filename;
-//             int distance;
-//             input >> img_filename >> distance; // error if can't
-//             Sprite background = graphics.load_image("assets/" + img_filename);
-//             background.scale = 2; // FIX so not hardcoded!!!
-//             backgrounds.push_back({background, distance});
-//         }
-//         else if (command == "tile") {
-//             char symbol;
-//             std::string sprite_name;
-//             bool blocking;
-//             input >> symbol >> sprite_name >> std::boolalpha >> blocking;
-//             Sprite sprite = graphics.get_sprite(sprite_name);
-//             tile_types[symbol] = Tile{sprite, blocking};
-//         }
-//         else {
-//             // error - unkown command on line _ (filename:line "error msg")
-//         }
-//     }
-// }
-
 void Level::load_theme(const std::string& filename, Graphics& graphics, Audio& audio) {
     std::ifstream input{"assets/" + filename};
 
@@ -180,7 +142,7 @@ void Level::load_theme(const std::string& filename, Graphics& graphics, Audio& a
                 std::string msg = error_message(filename, line_num, "Unable to load tile", line);
                 throw std::runtime_error(msg);
             }
-            Sprite sprite = graphics.get_sprite(sprite_name);
+            AnimatedSprite sprite = graphics.get_animated_sprite(sprite_name, 0.1);
             Tile tile{sprite, blocking};
             
 

@@ -2,9 +2,6 @@
 #include "player.h"
 #include <cmath>
 
-// World::World(int width, int height)
-//     :tilemap{width, height}{}
-
 World::World(const Level& level)
     :tilemap{level.width, level.height}, backgrounds{level.backgrounds}, quadtree{AABB{{level.width / 2.0, level.height / 2.0}, {level.width / 2.0, level.height / 2.0}}} {
     
@@ -15,13 +12,7 @@ World::World(const Level& level)
         enemies.push_back(std::make_shared<Enemy>(position, Vec<int>{1,1}, type));
     }
 }
-// void World::add_platform(int x, int y, int width, int height) {
-//     for (int i = 0; i < height; ++i){
-//         for (int j = 0; j < width;j++){
-//             tilemap(x+j, y+i) = Tile::Platform;
-//         }
-//     }
-// }
+
 void World::move_to(Vec<double>& position, const Vec<int>& size, Vec<double>& velocity) {
     // test sides first, if both collide then move backwards
     // bottom side
@@ -96,12 +87,6 @@ void World::move_to(Vec<double>& position, const Vec<int>& size, Vec<double>& ve
     }
 }
 
-// bool World::collides(const Vec<double>& position) const {
-//     int x = std::floor(position.x);
-//     int y = std::floor(position.y); 
-//     return tilemap(x,y) == Tile::Platform;
-// }
-
 bool World::collides(const Vec<double>& position) const {
     int x = std::floor(position.x);
     int y = std::floor(position.y);
@@ -125,7 +110,7 @@ std::shared_ptr<Command> World::touch_tiles(const Player& player) {
 }
 
 void World::remove_inactive() {
-    enemies.erase(std::remove_if(enemies.begin(), enemies.end(), [](std::shared_ptr<Enemy>enemy){return !enemy->combat.is_alive;}), enemies.end());
+    enemies.erase(std::remove_if(enemies.begin(), enemies.end(), [](std::shared_ptr<Enemy>enemy){return !enemy->combat.render;}), enemies.end());
     projectiles.erase(std::remove_if(std::begin(projectiles), std::end(projectiles), [](const Projectile& projectile){return !projectile.combat.is_alive;}), std::end(projectiles));
 
 }
